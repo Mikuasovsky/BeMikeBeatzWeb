@@ -508,7 +508,7 @@
             document.querySelectorAll('.project-card video').forEach(video => {
                 if (video !== except) {
                     video.pause();
-                    video.currentTime = 0;
+                    if (video.readyState) video.currentTime = 0;
                 }
             });
         };
@@ -548,6 +548,10 @@
             card.addEventListener('pointerenter', () => {
                 if (window.matchMedia('(hover: hover) and (pointer: fine)').matches && !reduceMotion) {
                     stopAllProjectVideos(video);
+                    if (!video.getAttribute('src')) {
+                        video.src = card.dataset.preview;
+                        video.load();
+                    }
                     video.play().catch(() => {});
                 }
             });
@@ -555,19 +559,19 @@
             card.addEventListener('pointerleave', () => {
                 if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
                     video.pause();
-                    video.currentTime = 0;
+                    if (video.readyState) video.currentTime = 0;
                 }
             });
 
             playButton?.addEventListener('click', event => {
                 event.stopPropagation();
                 stopAllProjectVideos(video);
-                openVideo(video.currentSrc || card.dataset.video, video.poster, playButton);
+                openVideo(card.dataset.video, video.poster, playButton);
             });
 
             card.querySelector('.project-media')?.addEventListener('click', event => {
                 if (event.target.closest('.project-play')) return;
-                openVideo(video.currentSrc || card.dataset.video, video.poster, card);
+                openVideo(card.dataset.video, video.poster, card);
             });
         });
 
