@@ -30,7 +30,7 @@
     <div class="header-right">
         <button class="header-icon-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-navigation">
             <span class="menu-bars" aria-hidden="true"><span></span><span></span><span></span></span>
-            <img class="header-icon" src="assets/images/bemike3.png" alt="">
+            <img class="header-icon" src="assets/images/bemike3-small.webp" alt="">
         </button>
     </div>
     
@@ -42,18 +42,18 @@
     <!-- HERO -->
     <section class="hero">
     <video muted loop playsinline preload="none" poster="assets/images/hero-dark.jpg" class="hero-video hero-video-dark" aria-hidden="true">
-        <source data-src="assets/video/background6.mp4" type="video/mp4">
+        <source data-src="assets/video/hero-sun-loop.mp4" type="video/mp4">
     </video>
 
     <video muted loop playsinline preload="none" poster="assets/images/hero-light.jpg" class="hero-video hero-video-light" aria-hidden="true">
-        <source data-src="assets/video/background4.mp4" type="video/mp4">
+        <source data-src="assets/video/hero-moon-loop.mp4" type="video/mp4">
     </video>
 
     <div class="hero-transform-ring" aria-hidden="true"></div>
     <div class="hero-overlay"></div>
 
     <div class="hero-content">
-        <h2 class="hero-title">Trap & Boom Bap Producer</h2>
+        <h1 class="hero-title">Trap & Boom Bap Producer</h1>
         <p class="hero-subtitle">PT × USA • Aggressive, melodic & underground beats</p>
 
         <div class="hero-buttons">
@@ -88,43 +88,55 @@
     <div class="latest-grid">
 
         <!-- BEAT 1 -->
-        <div class="latest-card">
-            <img src="assets/beats/flor.jpeg" alt="Dark Trap Beat">
+        <div class="latest-card" data-beat-id="flor">
+            <img src="assets/beats/flor.jpeg" alt="Flor beat cover" width="736" height="920" loading="lazy" decoding="async">
             <div class="latest-info">
                 <h4>Flor</h4>
                 <p>140 BPM</p>
                 <audio controls preload="none">
                     <source src="assets/beats/Flor(140bpm)@bemike_beatz.mp3" type="audio/mpeg">
                 </audio>
+                <div class="beat-card-actions">
+                    <button class="beat-favorite" type="button" aria-pressed="false" aria-label="Save Flor to favourites"><span aria-hidden="true">♡</span> Save</button>
+                    <a href="licensing.html?beat=flor">License beat ↗</a>
+                </div>
             </div>
         </div>
 
         <!-- BEAT 2 -->
-        <div class="latest-card">
-            <img src="assets/beats/dougie.jpeg" alt="Emotional Trap Beat">
+        <div class="latest-card" data-beat-id="dougie">
+            <img src="assets/beats/dougie.jpeg" alt="Dougie beat cover" width="735" height="665" loading="lazy" decoding="async">
             <div class="latest-info">
                 <h4>Dougie</h4>
                 <p>100 BPM</p>
                 <audio controls preload="none">
                     <source src="assets/beats/Jotinha.mp3" type="audio/mpeg">
                 </audio>
+                <div class="beat-card-actions">
+                    <button class="beat-favorite" type="button" aria-pressed="false" aria-label="Save Dougie to favourites"><span aria-hidden="true">♡</span> Save</button>
+                    <a href="licensing.html?beat=dougie">License beat ↗</a>
+                </div>
             </div>
         </div>
 
         <!-- BEAT 3 -->
-        <div class="latest-card">
-            <img src="assets/beats/week.jpeg" alt="Boom Bap Classic">
+        <div class="latest-card" data-beat-id="weak">
+            <img src="assets/beats/week.jpeg" alt="Weak beat cover" width="563" height="563" loading="lazy" decoding="async">
             <div class="latest-info">
                 <h4>Weak</h4>
                 <p>133 BPM</p>
                 <audio controls preload="none">
                     <source src="assets/beats/Week.mp3" type="audio/mpeg">
                 </audio>
+                <div class="beat-card-actions">
+                    <button class="beat-favorite" type="button" aria-pressed="false" aria-label="Save Weak to favourites"><span aria-hidden="true">♡</span> Save</button>
+                    <a href="licensing.html?beat=weak">License beat ↗</a>
+                </div>
             </div>
         </div>
 
-        <div class="latest-card crip-card">
-            <img src="assets/beats/blueface.jpeg" alt="Crip beat cover" loading="lazy" decoding="async">
+        <div class="latest-card crip-card" data-beat-id="crip">
+            <img src="assets/beats/blueface.jpeg" alt="Crip beat cover" width="640" height="640" loading="lazy" decoding="async">
             <div class="latest-info">
                 <h4>Crip</h4>
                 <span class="unreleased-tag">unreleased</span>
@@ -132,6 +144,10 @@
                 <audio id="crip-audio" controls preload="none">
                     <source src="assets/beats/BlueFace-preview.mp3" type="audio/mpeg">
                 </audio>
+                <div class="beat-card-actions">
+                    <button class="beat-favorite" type="button" aria-pressed="false" aria-label="Save Crip to favourites"><span aria-hidden="true">♡</span> Save</button>
+                    <a href="contact.html?beat=crip">Ask availability ↗</a>
+                </div>
             </div>
         </div>
 
@@ -180,7 +196,7 @@
 
     <!-- FOOTER -->
     <button class="floating-brand" type="button" aria-label="Switch to light theme" aria-pressed="false">
-        <img src="assets/images/bemike.png" alt="BeMike logo">
+        <img src="assets/images/bemike-small.webp" alt="BeMike logo">
     </button>
 
     <button class="floating-mute" type="button" aria-label="Mute local beat previews" title="Mute local beat previews" aria-pressed="false">

@@ -263,9 +263,9 @@ body.light-theme .hero-video-light {
     text-shadow: 0 2px 12px rgba(0,0,0,0.85);
 }
 
-.hero-content h2 {
+.hero-content .hero-title {
     font-size: 48px;
-    margin-bottom: 10px;
+    margin: 0 0 10px;
     animation: fadeIn 1.5s ease forwards;
 }
 
@@ -2592,4 +2592,174 @@ body.light-theme .hero-transform-ring {
     }
     .project-card:hover, .latest-card.animate:hover,
     .service-card.animate:hover, .featured-card.animate:hover { transform: none; }
+}
+
+/* Beat discovery: saved beats, comparison and a clear licensing path. */
+.featured-beats,
+.player-section { scroll-margin-top: 130px; }
+.featured-heading,
+.player-intro {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 24px;
+    text-align: left;
+}
+.featured-heading h2,
+.player-intro h2 {
+    margin: 0;
+    font-size: clamp(32px, 4vw, 48px);
+    line-height: 1.05;
+}
+.featured-heading > p,
+.player-intro > p {
+    max-width: 380px;
+    margin: 0;
+    color: #aaa;
+    line-height: 1.5;
+}
+body.light-theme .featured-heading > p,
+body.light-theme .player-intro > p { color: #514d47; }
+.player-intro { margin: 36px 0 24px; }
+.beat-library-controls {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 28px 0 4px;
+}
+.beat-saved-filter,
+.beat-card-actions button,
+.beat-card-actions a {
+    min-height: 38px;
+    border: 1px solid rgba(255,255,255,.28);
+    border-radius: 8px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.2;
+    text-decoration: none;
+    cursor: pointer;
+}
+.beat-saved-filter { padding: 8px 14px; }
+.beat-saved-filter[aria-pressed="true"],
+.beat-favorite[aria-pressed="true"],
+.beat-compare[aria-pressed="true"] {
+    border-color: #d61d16;
+    color: #ff6862;
+    background: rgba(195,0,0,.12);
+}
+.beat-saved-filter:hover,
+.beat-card-actions button:hover,
+.beat-card-actions a:hover,
+.beat-saved-filter:focus-visible,
+.beat-card-actions button:focus-visible,
+.beat-card-actions a:focus-visible { border-color: #e42c24; outline-color: #e42c24; }
+.saved-count { margin-left: 4px; opacity: .7; }
+.beat-filter-status { color: #aaa; font-size: 13px; }
+.beat-empty-state { padding: 24px; border: 1px dashed #777; border-radius: 12px; text-align: center; }
+.beat-empty-state[hidden],
+.latest-card[hidden],
+.compare-dock[hidden],
+.selected-beat-context[hidden],
+.contact-selection[hidden] { display: none !important; }
+.beat-card-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.beat-card-actions button { flex: 1 1 84px; padding: 7px 8px; }
+.beat-card-actions a { display: grid; flex: 1 1 100%; place-items: center; padding: 7px 8px; border-color: #c30000; color: #ff6862; }
+.home-page .beat-card-actions a { flex-basis: 110px; }
+body.light-theme .beat-saved-filter,
+body.light-theme .beat-card-actions button { border-color: #b9afa2; }
+body.light-theme .beat-card-actions a { color: #a5140f; }
+body.light-theme .beat-saved-filter[aria-pressed="true"],
+body.light-theme .beat-favorite[aria-pressed="true"],
+body.light-theme .beat-compare[aria-pressed="true"] { border-color: #a5140f; color: #a5140f; }
+body.light-theme .beat-filter-status { color: #514d47; }
+
+.compare-dock {
+    position: fixed;
+    left: 50%;
+    bottom: 16px;
+    z-index: 1002;
+    width: min(700px, calc(100% - 220px));
+    padding: 12px 16px;
+    border: 1px solid #b8231c;
+    border-radius: 16px;
+    background: rgba(13,13,13,.97);
+    color: #fff;
+    box-shadow: 0 16px 50px rgba(0,0,0,.5);
+    transform: translateX(-50%);
+}
+.compare-dock-heading,
+.compare-slots { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.compare-dock-heading strong { font-size: 14px; }
+.compare-clear { border: 0; background: transparent; color: #ff7771; font: inherit; font-size: 13px; cursor: pointer; }
+.compare-slots { margin-top: 8px; }
+.compare-play {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+    min-height: 42px;
+    padding: 8px 10px;
+    border: 1px solid rgba(255,255,255,.32);
+    border-radius: 9px;
+    background: #252525;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+}
+.compare-play:disabled { opacity: .7; cursor: default; }
+.compare-play.is-playing { border-color: #ff625c; background: #4a1917; }
+.compare-slot-label { color: #ff7771; font-weight: 800; }
+.compare-slot-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.compare-play-icon { margin-left: auto; }
+.compare-help { margin: 8px 0 0; color: #c9c9c9; font-size: 12px; }
+body.light-theme .compare-dock { background: rgba(255,253,248,.98); color: #171513; }
+body.light-theme .compare-play { background: #f4f1eb; border-color: #c3b8aa; }
+body.light-theme .compare-play.is-playing { background: #f7d9d5; border-color: #a5140f; }
+body.light-theme .compare-help { color: #514d47; }
+body.light-theme .compare-clear,
+body.light-theme .compare-slot-label { color: #a5140f; }
+
+.selected-beat-context,
+.contact-selection {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 14px 18px;
+    border: 1px solid rgba(195,0,0,.55);
+    border-radius: 12px;
+    background: rgba(195,0,0,.08);
+}
+.selected-beat-context { max-width: 1180px; margin: 0 auto 26px; }
+.contact-selection { margin: 0 0 22px; }
+.selected-beat-context span,
+.contact-selection span { color: #ff6862; font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.selected-beat-context strong,
+.contact-selection strong { font-size: 16px; }
+.selected-beat-context a,
+.contact-selection a { margin-left: auto; color: inherit; font-size: 13px; text-underline-offset: 4px; }
+body.light-theme .selected-beat-context span,
+body.light-theme .contact-selection span { color: #a5140f; }
+.contact-gmail { font-size: 17px; }
+body:not(.light-theme) .contact-gmail { color: #fff; }
+body.light-theme .contact-gmail { color: #a5140f; }
+
+@media (max-width: 900px) {
+    .compare-dock { bottom: 108px; width: min(700px, calc(100% - 24px)); }
+}
+@media (max-width: 600px) {
+    .featured-heading,
+    .player-intro { display: block; }
+    .featured-heading > p,
+    .player-intro > p { margin-top: 12px; }
+    .beat-library-controls { flex-wrap: wrap; }
+    .compare-dock { bottom: 84px; padding: 10px 12px; }
+    .compare-slots { gap: 7px; }
+    .compare-play { font-size: 12px; padding: 6px; }
+    .selected-beat-context a,
+    .contact-selection a { margin-left: 0; }
 }

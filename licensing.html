@@ -27,7 +27,7 @@
         <div class="header-right">
             <button class="header-icon-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-navigation">
                 <span class="menu-bars" aria-hidden="true"><span></span><span></span><span></span></span>
-                <img class="header-icon" src="assets/images/bemike3.png" alt="">
+                <img class="header-icon" src="assets/images/bemike3-small.webp" alt="">
             </button>
         </div>
     </header>
@@ -41,6 +41,12 @@
             <p class="licensing-intro-text">Every release has a different need. Pick the level of access that fits your project, then make the beat yours.</p>
         </section>
 
+        <div class="selected-beat-context" hidden>
+            <span>Selected beat</span>
+            <strong class="selected-beat-name"></strong>
+            <a href="beats.html#featured-beats">Choose another</a>
+        </div>
+
         <section class="license-list" aria-label="License options">
             <article class="license-row">
                 <div class="license-name">
@@ -53,7 +59,7 @@
                     <li>Non-exclusive use</li>
                     <li>For streaming platforms</li>
                 </ul>
-                <a class="license-link" href="contact.html">Ask about Basic <span>↗</span></a>
+                <a class="license-link" href="contact.html?license=basic" data-license="basic">Ask about Basic <span>↗</span></a>
             </article>
 
             <article class="license-row license-row-featured">
@@ -67,7 +73,7 @@
                     <li>Non-exclusive use</li>
                     <li>Higher streaming limits</li>
                 </ul>
-                <a class="license-link" href="contact.html">Ask about Premium <span>↗</span></a>
+                <a class="license-link" href="contact.html?license=premium" data-license="premium">Ask about Premium <span>↗</span></a>
             </article>
 
             <article class="license-row">
@@ -81,7 +87,7 @@
                     <li>Exclusive ownership</li>
                     <li>Available for one artist</li>
                 </ul>
-                <a class="license-link" href="contact.html">Ask about Exclusive <span>↗</span></a>
+                <a class="license-link" href="contact.html?license=exclusive" data-license="exclusive">Ask about Exclusive <span>↗</span></a>
             </article>
         </section>
 
@@ -93,7 +99,7 @@
     </main>
 
     <button class="floating-brand" type="button" aria-label="Switch to light theme" aria-pressed="false">
-        <img src="assets/images/bemike.png" alt="BeMike logo">
+        <img src="assets/images/bemike-small.webp" alt="BeMike logo">
     </button>
 
     <button class="floating-mute" type="button" aria-label="Mute local beat previews" title="Mute local beat previews" aria-pressed="false">

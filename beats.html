@@ -28,7 +28,7 @@
         <div class="header-right">
             <button class="header-icon-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-navigation">
                 <span class="menu-bars" aria-hidden="true"><span></span><span></span><span></span></span>
-                <img class="header-icon" src="assets/images/bemike3.png" alt="">
+                <img class="header-icon" src="assets/images/bemike3-small.webp" alt="">
             </button>
         </div>
     </header>
@@ -41,72 +41,76 @@
             <h1>Find the right<br>sound for it.</h1>
             <p class="catalog-description">Browse trap, boom bap and melodic productions made for records with presence, character and impact.</p>
             <div class="catalog-actions">
-                <a class="btn" href="#beatstars-player">Browse the catalogue</a>
+                <a class="btn" href="#featured-beats">Explore featured beats</a>
                 <a class="btn-outline" href="contact.html">Need a custom beat?</a>
             </div>
-            <p class="catalog-note">Preview, choose a license and make the track yours.</p>
+            <p class="catalog-note">Listen, save your favourites, compare two beats and choose a license.</p>
         </div>
     </section>
-
-    <p class="catalog-note" style="text-align:center">The floating sound button controls local previews only. Use the BeatStars player controls for the catalogue.</p>
-    <!-- PLAYER OFICIAL -->
-    <section class="player-section" id="beatstars-player">
-        <div class="player-wrapper">
-            <!-- Substituir XXXXXX pelo teu storeId -->
-            <iframe 
-                src="https://player.beatstars.com/?storeId=152985"
-                width="100%" 
-                height="600" 
-                frameborder="0"
-                loading="lazy"
-                title="BeMikeBeatz beat catalogue">
-            </iframe>
-        </div>
-    </section>
-
-    
-
 
     <!-- FEATURED BEATS -->
-    <section class="featured-beats">
-        <h3>Featured Beats</h3>
+    <section class="featured-beats" id="featured-beats">
+        <div class="featured-heading">
+            <div><p class="catalog-eyebrow">Start listening</p><h2>Featured beats</h2></div>
+            <p>Find your sound here, then ask about a license for the beat you choose.</p>
+        </div>
+        <div class="beat-library-controls">
+            <button class="beat-saved-filter" type="button" aria-pressed="false">Show saved <span class="saved-count">0</span></button>
+            <span class="beat-filter-status" role="status" aria-live="polite"></span>
+        </div>
+        <p class="beat-empty-state" hidden>No saved beats yet. Tap the heart on a beat to keep it here.</p>
 
         <div class="latest-grid">
-            <div class="latest-card">
-                <img src="assets/beats/flor.jpeg" alt="Flor beat cover" loading="lazy" decoding="async">
+            <div class="latest-card" data-beat-id="flor">
+                <img src="assets/beats/flor.jpeg" alt="Flor beat cover" width="736" height="920" loading="lazy" decoding="async">
                 <div class="latest-info">
                     <h4>Flor</h4>
                     <p>140 BPM</p>
                     <audio controls preload="none">
                         <source src="assets/beats/Flor(140bpm)@bemike_beatz.mp3" type="audio/mpeg">
                     </audio>
+                    <div class="beat-card-actions">
+                        <button class="beat-favorite" type="button" aria-pressed="false" aria-label="Save Flor to favourites"><span aria-hidden="true">♡</span> Save</button>
+                        <button class="beat-compare" type="button" aria-pressed="false">Compare</button>
+                        <a href="licensing.html?beat=flor">License beat ↗</a>
+                    </div>
                 </div>
             </div>
 
-            <div class="latest-card">
-                <img src="assets/beats/dougie.jpeg" alt="Dougie beat cover" loading="lazy" decoding="async">
+            <div class="latest-card" data-beat-id="dougie">
+                <img src="assets/beats/dougie.jpeg" alt="Dougie beat cover" width="735" height="665" loading="lazy" decoding="async">
                 <div class="latest-info">
                     <h4>Dougie</h4>
                     <p>100 BPM</p>
                     <audio controls preload="none">
                         <source src="assets/beats/Jotinha.mp3" type="audio/mpeg">
                     </audio>
+                    <div class="beat-card-actions">
+                        <button class="beat-favorite" type="button" aria-pressed="false" aria-label="Save Dougie to favourites"><span aria-hidden="true">♡</span> Save</button>
+                        <button class="beat-compare" type="button" aria-pressed="false">Compare</button>
+                        <a href="licensing.html?beat=dougie">License beat ↗</a>
+                    </div>
                 </div>
             </div>
 
-            <div class="latest-card">
-                <img src="assets/beats/week.jpeg" alt="Weak beat cover" loading="lazy" decoding="async">
+            <div class="latest-card" data-beat-id="weak">
+                <img src="assets/beats/week.jpeg" alt="Weak beat cover" width="563" height="563" loading="lazy" decoding="async">
                 <div class="latest-info">
                     <h4>Weak</h4>
                     <p>133 BPM</p>
                     <audio controls preload="none">
                         <source src="assets/beats/Week.mp3" type="audio/mpeg">
                     </audio>
+                    <div class="beat-card-actions">
+                        <button class="beat-favorite" type="button" aria-pressed="false" aria-label="Save Weak to favourites"><span aria-hidden="true">♡</span> Save</button>
+                        <button class="beat-compare" type="button" aria-pressed="false">Compare</button>
+                        <a href="licensing.html?beat=weak">License beat ↗</a>
+                    </div>
                 </div>
             </div>
 
-            <div class="latest-card crip-card">
-                <img src="assets/beats/blueface.jpeg" alt="Crip beat cover" loading="lazy" decoding="async">
+            <div class="latest-card crip-card" data-beat-id="crip">
+                <img src="assets/beats/blueface.jpeg" alt="Crip beat cover" width="640" height="640" loading="lazy" decoding="async">
                 <div class="latest-info">
                     <h4>Crip</h4>
                     <span class="unreleased-tag">unreleased</span>
@@ -114,8 +118,32 @@
                     <audio id="crip-audio" controls preload="none" data-preview-duration="15">
                         <source src="assets/beats/BlueFace-preview.mp3" type="audio/mpeg">
                     </audio>
+                    <div class="beat-card-actions">
+                        <button class="beat-favorite" type="button" aria-pressed="false" aria-label="Save Crip to favourites"><span aria-hidden="true">♡</span> Save</button>
+                        <button class="beat-compare" type="button" aria-pressed="false">Compare</button>
+                        <a href="contact.html?beat=crip">Ask availability ↗</a>
+                    </div>
                 </div>
             </div>
+        </div>
+    </section>
+    <div class="compare-dock" hidden role="region" aria-label="Beat comparison">
+        <div class="compare-dock-heading"><strong>Compare beats</strong><button class="compare-clear" type="button">Clear</button></div>
+        <div class="compare-slots">
+            <button class="compare-play" type="button" data-slot="0" disabled><span class="compare-slot-label">A</span><span class="compare-slot-title">Choose a beat</span><span class="compare-play-icon" aria-hidden="true">▶</span></button>
+            <button class="compare-play" type="button" data-slot="1" disabled><span class="compare-slot-label">B</span><span class="compare-slot-title">Choose a beat</span><span class="compare-play-icon" aria-hidden="true">▶</span></button>
+        </div>
+        <p class="compare-help" role="status" aria-live="polite">Choose two beats to compare them.</p>
+    </div>
+
+    <!-- FULL CATALOGUE -->
+    <section class="player-section" id="beatstars-player">
+        <div class="player-intro">
+            <div><p class="catalog-eyebrow">More to explore</p><h2>Full catalogue</h2></div>
+            <p>Discover the rest of the catalogue and purchase directly through BeatStars. Its player has separate sound controls.</p>
+        </div>
+        <div class="player-wrapper">
+            <iframe src="https://player.beatstars.com/?storeId=152985" width="100%" height="600" loading="lazy" title="BeMikeBeatz full beat catalogue on BeatStars"></iframe>
         </div>
     </section>
     <section class="section-divider-ultra"></section>
@@ -123,7 +151,7 @@
 
     <!-- FOOTER -->
     <button class="floating-brand" type="button" aria-label="Switch to light theme" aria-pressed="false">
-        <img src="assets/images/bemike.png" alt="BeMike logo">
+        <img src="assets/images/bemike-small.webp" alt="BeMike logo">
     </button>
 
     <button class="floating-mute" type="button" aria-label="Mute local beat previews" title="Mute local beat previews" aria-pressed="false">

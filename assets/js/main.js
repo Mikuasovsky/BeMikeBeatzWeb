@@ -433,8 +433,187 @@
     });
 
     document.addEventListener('visibilitychange', () => {
-        if (document.hidden && activeAudio) activeAudio.pause();
+        if (document.hidden) {
+            if (activeAudio) activeAudio.pause();
+            heroVideos.forEach(video => video.pause());
+        } else {
+            updateHeroVideo();
+        }
     });
+
+    // Beat discovery and licensing share the same small, known catalogue.
+    const beatNames = { flor: 'Flor', dougie: 'Dougie', weak: 'Weak', crip: 'Crip' };
+    const licenseNames = { basic: 'Basic', premium: 'Premium', exclusive: 'Exclusive' };
+    const beatCards = [...document.querySelectorAll('.latest-card[data-beat-id]')];
+    const favoriteStorageKey = 'bemike-favorites';
+
+    function readFavorites() {
+        try {
+            const saved = JSON.parse(storage.getItem(favoriteStorageKey) || '[]');
+            return new Set(Array.isArray(saved) ? saved.filter(id => Object.hasOwn(beatNames, id)) : []);
+        } catch {
+            return new Set();
+        }
+    }
+
+    let favorites = readFavorites();
+    const savedFilter = document.querySelector('.beat-saved-filter');
+    const savedCount = savedFilter?.querySelector('.saved-count');
+    const emptyState = document.querySelector('.beat-empty-state');
+    const filterStatus = document.querySelector('.beat-filter-status');
+    let showSavedOnly = false;
+
+    function renderFavorites() {
+        beatCards.forEach(card => {
+            const id = card.dataset.beatId;
+            const saved = favorites.has(id);
+            const button = card.querySelector('.beat-favorite');
+            if (button) {
+                button.setAttribute('aria-pressed', String(saved));
+                button.setAttribute('aria-label', `${saved ? 'Remove' : 'Save'} ${beatNames[id]} ${saved ? 'from' : 'to'} favourites`);
+                button.textContent = saved ? '♥ Saved' : '♡ Save';
+            }
+            card.hidden = showSavedOnly && !saved;
+            if (card.hidden) card.querySelector('audio')?.pause();
+        });
+
+        if (savedCount) savedCount.textContent = String(favorites.size);
+        if (savedFilter) {
+            savedFilter.setAttribute('aria-pressed', String(showSavedOnly));
+            savedFilter.firstChild.textContent = showSavedOnly ? 'Show all ' : 'Show saved ';
+        }
+        if (emptyState) emptyState.hidden = !showSavedOnly || beatCards.some(card => !card.hidden);
+        if (filterStatus) filterStatus.textContent = showSavedOnly ? `${favorites.size} saved beat${favorites.size === 1 ? '' : 's'}` : '';
+    }
+
+    beatCards.forEach(card => {
+        card.querySelector('.beat-favorite')?.addEventListener('click', () => {
+            const id = card.dataset.beatId;
+            if (favorites.has(id)) favorites.delete(id);
+            else favorites.add(id);
+            storage.setItem(favoriteStorageKey, JSON.stringify([...favorites]));
+            renderFavorites();
+        });
+    });
+    savedFilter?.addEventListener('click', () => {
+        showSavedOnly = !showSavedOnly;
+        renderFavorites();
+    });
+    window.addEventListener('storage', event => {
+        if (event.key !== favoriteStorageKey) return;
+        favorites = readFavorites();
+        renderFavorites();
+    });
+    renderFavorites();
+
+    const compareDock = document.querySelector('.compare-dock');
+    if (compareDock) {
+        const selected = [null, null];
+        const slotButtons = [...compareDock.querySelectorAll('.compare-play')];
+        const compareHelp = compareDock.querySelector('.compare-help');
+        const cardById = new Map(beatCards.map(card => [card.dataset.beatId, card]));
+
+        const renderComparison = () => {
+            compareDock.hidden = !selected.some(Boolean);
+            const ready = selected.every(Boolean);
+
+            beatCards.forEach(card => {
+                const button = card.querySelector('.beat-compare');
+                if (!button) return;
+                const slot = selected.indexOf(card.dataset.beatId);
+                button.setAttribute('aria-pressed', String(slot !== -1));
+                button.setAttribute('aria-label', slot === -1 ? `Add ${beatNames[card.dataset.beatId]} to comparison` : `Remove ${beatNames[card.dataset.beatId]} from comparison`);
+                button.textContent = slot === -1 ? 'Compare' : `Selected ${slot === 0 ? 'A' : 'B'}`;
+            });
+
+            slotButtons.forEach((button, index) => {
+                const id = selected[index];
+                const audio = id && cardById.get(id)?.querySelector('audio');
+                const playing = Boolean(audio && !audio.paused);
+                button.disabled = !ready;
+                button.querySelector('.compare-slot-title').textContent = id ? beatNames[id] : 'Choose a beat';
+                button.querySelector('.compare-play-icon').textContent = playing ? 'Ⅱ' : '▶';
+                button.setAttribute('aria-label', id ? `${playing ? 'Pause' : 'Play'} ${beatNames[id]} as ${index === 0 ? 'A' : 'B'}` : `Choose beat ${index === 0 ? 'A' : 'B'}`);
+                button.classList.toggle('is-playing', playing);
+            });
+
+            if (compareHelp) compareHelp.textContent = ready
+                ? 'Switch between A and B to hear each beat from the start.'
+                : 'Choose one more beat to compare.';
+        };
+
+        beatCards.forEach(card => {
+            const id = card.dataset.beatId;
+            card.querySelector('.beat-compare')?.addEventListener('click', () => {
+                const currentSlot = selected.indexOf(id);
+                if (currentSlot !== -1) {
+                    card.querySelector('audio')?.pause();
+                    selected.splice(currentSlot, 1);
+                    selected.push(null);
+                } else if (selected[0] === null) selected[0] = id;
+                else if (selected[1] === null) selected[1] = id;
+                else {
+                    cardById.get(selected[1])?.querySelector('audio')?.pause();
+                    selected[1] = id;
+                }
+                renderComparison();
+            });
+            ['play', 'pause', 'ended'].forEach(type => card.querySelector('audio')?.addEventListener(type, renderComparison));
+        });
+
+        slotButtons.forEach((button, index) => button.addEventListener('click', () => {
+            const id = selected[index];
+            const audio = id && cardById.get(id)?.querySelector('audio');
+            if (!audio) return;
+            if (!audio.paused) {
+                audio.pause();
+            } else {
+                audioElements.forEach(other => { if (other !== audio) other.pause(); });
+                if (audio.readyState) audio.currentTime = 0;
+                audio.play().catch(() => {});
+            }
+            renderComparison();
+        }));
+        compareDock.querySelector('.compare-clear')?.addEventListener('click', () => {
+            selected.forEach(id => cardById.get(id)?.querySelector('audio')?.pause());
+            selected[0] = null;
+            selected[1] = null;
+            renderComparison();
+        });
+        renderComparison();
+    }
+
+    const pageParams = new URLSearchParams(window.location.search);
+    const selectedBeatId = pageParams.get('beat');
+    const selectedBeatName = Object.hasOwn(beatNames, selectedBeatId) ? beatNames[selectedBeatId] : null;
+    const selectedLicenseId = pageParams.get('license');
+    const selectedLicenseName = Object.hasOwn(licenseNames, selectedLicenseId) ? licenseNames[selectedLicenseId] : null;
+    const licensingContext = document.querySelector('.selected-beat-context');
+
+    if (licensingContext && selectedBeatName) {
+        licensingContext.hidden = false;
+        licensingContext.querySelector('.selected-beat-name').textContent = selectedBeatName;
+        document.querySelectorAll('.license-link[data-license]').forEach(link => {
+            const params = new URLSearchParams({ beat: selectedBeatId, license: link.dataset.license });
+            link.href = `contact.html?${params}`;
+        });
+    }
+
+    const contactContext = document.querySelector('.contact-selection');
+    if (contactContext && (selectedBeatName || selectedLicenseName)) {
+        contactContext.hidden = false;
+        const summary = [selectedBeatName, selectedLicenseName && `${selectedLicenseName} license`].filter(Boolean).join(' · ');
+        contactContext.querySelector('.contact-selection-summary').textContent = summary;
+
+        const subject = selectedBeatName
+            ? `${selectedBeatId === 'crip' ? 'Availability' : 'Licensing'} enquiry — ${selectedBeatName}${selectedLicenseName ? ` (${selectedLicenseName})` : ''}`
+            : `${selectedLicenseName} licensing enquiry`;
+        const body = `Hi BeMikeBeatz,\n\nI am interested in ${summary}.\n\nMy project: \nMy release plans: \n\nThanks!`;
+        document.querySelector('.contact-email').href = `mailto:bemike.off@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        const gmail = new URL('https://mail.google.com/mail/');
+        gmail.search = new URLSearchParams({ view: 'cm', fs: '1', to: 'bemike.off@gmail.com', su: subject, body });
+        document.querySelector('.contact-gmail').href = gmail.href;
+    }
 
     // Page entrance stagger animations. No automatic audio playback: sound starts only after user interaction.
     (() => {
