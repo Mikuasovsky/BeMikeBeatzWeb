@@ -41,11 +41,94 @@
             <h1>Find the right<br>sound for it.</h1>
             <p class="catalog-description">Browse trap, boom bap and melodic productions made for records with presence, character and impact.</p>
             <div class="catalog-actions">
-                <a class="btn" href="#featured-beats">Explore featured beats</a>
+                <a class="btn" href="#beat-battle">Find your sound</a>
+                <a class="btn-outline" href="#featured-beats">Explore featured beats</a>
                 <a class="btn-outline" href="contact.html">Need a custom beat?</a>
             </div>
-            <p class="catalog-note">Listen, save your favourites, compare two beats and choose a license.</p>
+            <p class="catalog-note">Three choices, one beat to start with. Or browse and compare at your own pace.</p>
         </div>
+    </section>
+
+    <section class="beat-battle" id="beat-battle" aria-labelledby="battle-title">
+        <div class="battle-intro">
+            <div>
+                <p class="catalog-eyebrow">Interactive beat finder</p>
+                <h2 id="battle-title">Discover your next sound.</h2>
+                <p>Listen to two beats, pick the one that speaks to you, and meet your match after three rounds.</p>
+            </div>
+            <div class="battle-intro-action">
+                <button class="btn battle-start" type="button">Start the beat battle <span aria-hidden="true">↗</span></button>
+                <span>3 picks · 15-second listens · no sign-up</span>
+            </div>
+        </div>
+
+        <div class="battle-stage" hidden>
+            <div class="battle-stage-heading">
+                <div>
+                    <span class="battle-round-label" tabindex="-1">Round 1 of 3</span>
+                    <h3>Which one feels right?</h3>
+                </div>
+                <span class="battle-progress" aria-hidden="true"><i></i><i></i><i></i></span>
+            </div>
+            <div class="battle-pair">
+                <article class="battle-option" data-side="0">
+                    <img alt="" width="320" height="320" decoding="async">
+                    <div class="battle-option-copy">
+                        <span class="battle-option-letter">A</span>
+                        <h4 class="battle-option-name"></h4>
+                        <p class="battle-option-meta"></p>
+                        <div class="battle-option-actions">
+                            <button class="battle-listen" type="button">▶ Listen for 15s</button>
+                            <button class="battle-pick" type="button">Pick this beat <span aria-hidden="true">↗</span></button>
+                        </div>
+                        <progress class="battle-preview-progress" max="15" value="0" aria-label="Preview progress"></progress>
+                    </div>
+                </article>
+                <span class="battle-versus" aria-hidden="true">VS</span>
+                <article class="battle-option" data-side="1">
+                    <img alt="" width="320" height="320" decoding="async">
+                    <div class="battle-option-copy">
+                        <span class="battle-option-letter">B</span>
+                        <h4 class="battle-option-name"></h4>
+                        <p class="battle-option-meta"></p>
+                        <div class="battle-option-actions">
+                            <button class="battle-listen" type="button">▶ Listen for 15s</button>
+                            <button class="battle-pick" type="button">Pick this beat <span aria-hidden="true">↗</span></button>
+                        </div>
+                        <progress class="battle-preview-progress" max="15" value="0" aria-label="Preview progress"></progress>
+                    </div>
+                </article>
+            </div>
+            <div class="battle-stage-footer">
+                <p class="battle-help" role="status" aria-live="polite">Listen, then pick one to continue.</p>
+                <button class="battle-stage-restart" type="button">Start over</button>
+            </div>
+        </div>
+
+        <div class="battle-result" hidden>
+            <p class="catalog-eyebrow">Your match</p>
+            <div class="battle-result-layout">
+                <img class="battle-result-art" alt="" width="320" height="320" decoding="async">
+                <div>
+                    <span class="battle-result-kicker">This one made it through.</span>
+                    <h3 class="battle-result-name" tabindex="-1"></h3>
+                    <p class="battle-result-meta"></p>
+                    <p class="battle-result-copy">Keep listening, save it for later, or ask how to use it in your next release.</p>
+                    <div class="battle-result-actions">
+                        <button class="battle-result-listen" type="button">▶ Listen again</button>
+                        <button class="battle-result-save" type="button" aria-pressed="false">♡ Save beat</button>
+                        <a class="battle-result-license" href="licensing.html">Explore licensing ↗</a>
+                    </div>
+                    <div class="battle-result-secondary">
+                        <button class="battle-result-compare" type="button" hidden>Compare finalists A/B</button>
+                        <button class="battle-restart" type="button">Try again</button>
+                        <button class="battle-share" type="button">Copy result link</button>
+                    </div>
+                    <p class="battle-share-status" role="status" aria-live="polite"></p>
+                </div>
+            </div>
+        </div>
+        <noscript><p>Enable JavaScript to try the beat battle, or <a href="#featured-beats">browse the featured beats</a>.</p></noscript>
     </section>
 
     <!-- FEATURED BEATS -->

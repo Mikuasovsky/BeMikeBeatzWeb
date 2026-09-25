@@ -2763,3 +2763,158 @@ body.light-theme .contact-gmail { color: #a5140f; }
     .selected-beat-context a,
     .contact-selection a { margin-left: 0; }
 }
+
+/* Beat Battle: a lightweight guided route through the four local previews. */
+.beat-battle {
+    --battle-panel: #111;
+    --battle-card: #1a1a1a;
+    --battle-border: #37312e;
+    --battle-muted: #bab5b1;
+    max-width: 1180px;
+    margin: 0 auto 30px;
+    padding: 32px;
+    border: 1px solid var(--battle-border);
+    border-radius: 20px;
+    background: radial-gradient(circle at 85% 0, rgba(195, 0, 0, .16), transparent 38%), var(--battle-panel);
+    color: #fff;
+    scroll-margin-top: 130px;
+}
+body.light-theme .beat-battle {
+    --battle-panel: #fffdf8;
+    --battle-card: #f4f0e9;
+    --battle-border: #d7cfc4;
+    --battle-muted: #5b534d;
+    background: radial-gradient(circle at 85% 0, rgba(195, 0, 0, .08), transparent 38%), var(--battle-panel);
+    color: #171513;
+}
+body.theme-transition .beat-battle,
+body.theme-transition .battle-option { transition: color 420ms ease, border-color 420ms ease, background-color 420ms ease; }
+.battle-intro {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 28px;
+}
+.battle-intro h2 {
+    max-width: 610px;
+    margin: 0;
+    font-size: clamp(32px, 4vw, 54px);
+    line-height: 1.03;
+}
+.battle-intro p:not(.catalog-eyebrow) {
+    max-width: 590px;
+    margin: 15px 0 0;
+    color: var(--battle-muted);
+    line-height: 1.55;
+}
+.battle-intro-action { display: grid; justify-items: center; gap: 10px; flex: 0 0 auto; }
+.battle-intro-action span { color: var(--battle-muted); font-size: 12px; }
+.battle-start { border: 1px solid #d33129; font: inherit; cursor: pointer; }
+.battle-stage,
+.battle-result { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--battle-border); }
+.battle-stage[hidden],
+.battle-result[hidden],
+.battle-start[hidden],
+.battle-result-compare[hidden] { display: none !important; }
+.battle-stage-heading { display: flex; justify-content: space-between; align-items: end; gap: 20px; margin-bottom: 18px; }
+.battle-round-label,
+.battle-result-kicker {
+    color: #ff7771;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: .11em;
+    text-transform: uppercase;
+}
+body.light-theme .battle-round-label,
+body.light-theme .battle-result-kicker { color: #a5140f; }
+.battle-stage-heading h3 { margin: 6px 0 0; font-size: clamp(24px, 3vw, 34px); }
+.battle-progress { display: flex; gap: 6px; padding-bottom: 5px; }
+.battle-progress i { display: block; width: 30px; height: 5px; border-radius: 99px; background: var(--battle-border); }
+.battle-progress i.is-current,
+.battle-progress i.is-complete { background: #c30000; }
+.battle-progress i.is-current { box-shadow: 0 0 13px rgba(195, 0, 0, .65); }
+.battle-pair { position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+.battle-option { overflow: hidden; min-width: 0; border: 1px solid var(--battle-border); border-radius: 15px; background: var(--battle-card); }
+.battle-option:focus-within { border-color: #c30000; }
+.battle-option > img { display: block; width: 100%; height: clamp(180px, 22vw, 265px); object-fit: cover; }
+.battle-option[data-beat-id="crip"] > img { object-position: 50% 60%; }
+.battle-option-copy { padding: 18px 20px 19px; }
+.battle-option-letter { display: inline-grid; place-items: center; width: 29px; height: 29px; border: 1px solid #bb2720; border-radius: 50%; color: #ff7771; font-size: 13px; font-weight: 800; }
+body.light-theme .battle-option-letter { color: #a5140f; }
+.battle-option-name { display: inline; margin: 0 0 0 10px; font-size: 24px; }
+.battle-option-meta { margin: 9px 0 17px; color: var(--battle-muted); font-size: 13px; }
+.battle-option-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.battle-option-actions button,
+.battle-result-actions button,
+.battle-result-actions a {
+    min-height: 43px;
+    padding: 9px 12px;
+    border: 1px solid #b9221a;
+    border-radius: 8px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 750;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+}
+.battle-option-actions .battle-pick,
+.battle-result-actions .battle-result-license { display: grid; place-items: center; background: #c30000; color: #fff; }
+.battle-option-actions button:hover,
+.battle-result-actions button:hover,
+.battle-result-actions a:hover { border-color: #ef453c; box-shadow: 0 0 0 2px rgba(195, 0, 0, .16); }
+.battle-option-actions button:focus-visible,
+.battle-result-actions button:focus-visible,
+.battle-result-actions a:focus-visible,
+.battle-result-secondary button:focus-visible,
+.battle-start:focus-visible { outline: 3px solid #f15d53; outline-offset: 3px; }
+.battle-versus { position: absolute; left: 50%; top: 38%; z-index: 1; display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid #b9221a; border-radius: 50%; background: #111; color: #fff; font-size: 12px; font-weight: 900; transform: translate(-50%, -50%); }
+.battle-preview-progress { display: block; width: 100%; height: 4px; margin: 14px 0 0; border: 0; appearance: none; background: var(--battle-border); }
+.battle-preview-progress::-webkit-progress-bar { background: var(--battle-border); }
+.battle-preview-progress::-webkit-progress-value { background: #e6332b; }
+.battle-preview-progress::-moz-progress-bar { background: #e6332b; }
+.battle-stage-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
+.battle-help { min-height: 1.5em; margin: 0; color: var(--battle-muted); font-size: 13px; }
+.battle-stage-restart { padding: 0; border: 0; background: transparent; color: #ff7771; font: inherit; font-size: 13px; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+body.light-theme .battle-stage-restart { color: #a5140f; }
+.battle-result-layout { display: grid; grid-template-columns: minmax(180px, 285px) 1fr; align-items: center; gap: 30px; }
+.battle-result-art { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; border: 1px solid #a6241d; border-radius: 14px; }
+.battle-result-name { margin: 6px 0 4px; font-size: clamp(40px, 6vw, 72px); line-height: 1; }
+.battle-result-meta { margin: 0; color: #ff7771; font-weight: 700; }
+body.light-theme .battle-result-meta { color: #a5140f; }
+.battle-result-copy { max-width: 510px; color: var(--battle-muted); line-height: 1.55; }
+.battle-result-actions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 20px; }
+.battle-result-actions button,
+.battle-result-actions a { display: grid; place-items: center; }
+.battle-result-actions .battle-result-save[aria-pressed="true"] { background: rgba(195, 0, 0, .15); color: #ff7771; }
+body.light-theme .battle-result-actions .battle-result-save[aria-pressed="true"] { color: #a5140f; }
+.battle-result-secondary { display: flex; flex-wrap: wrap; gap: 17px; margin-top: 18px; }
+.battle-result-secondary button { padding: 0; border: 0; background: transparent; color: #ff7771; font: inherit; font-size: 13px; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+body.light-theme .battle-result-secondary button { color: #a5140f; }
+.battle-stage-restart:focus-visible { outline: 3px solid #f15d53; outline-offset: 3px; }
+.battle-share-status { min-height: 1.3em; margin: 12px 0 0; color: var(--battle-muted); font-size: 12px; overflow-wrap: anywhere; }
+
+@media (max-width: 900px) {
+    .beat-battle { margin-right: 24px; margin-left: 24px; }
+}
+@media (max-width: 680px) {
+    .beat-battle { padding: 22px; }
+    .battle-intro { display: block; }
+    .battle-intro-action { justify-items: start; margin-top: 22px; }
+    .battle-pair { grid-template-columns: 1fr; gap: 15px; }
+    .battle-option { display: grid; grid-template-columns: 38% 1fr; }
+    .battle-option > img { height: 100%; min-height: 190px; }
+    .battle-option-actions { grid-template-columns: 1fr; }
+    .battle-versus { top: 50%; }
+    .battle-result-layout { grid-template-columns: 1fr; }
+    .battle-result-art { max-width: 220px; }
+}
+@media (max-width: 430px) {
+    .beat-battle { margin-right: 14px; margin-left: 14px; padding: 18px; }
+    .battle-option { grid-template-columns: 34% 1fr; }
+    .battle-option-copy { padding: 13px; }
+    .battle-option-name { font-size: 20px; }
+    .battle-option > img { min-height: 225px; }
+}

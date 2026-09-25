@@ -457,6 +457,7 @@
     }
 
     let favorites = readFavorites();
+    let battleResultBeatId = null;
     const savedFilter = document.querySelector('.beat-saved-filter');
     const savedCount = savedFilter?.querySelector('.saved-count');
     const emptyState = document.querySelector('.beat-empty-state');
@@ -484,6 +485,12 @@
         }
         if (emptyState) emptyState.hidden = !showSavedOnly || beatCards.some(card => !card.hidden);
         if (filterStatus) filterStatus.textContent = showSavedOnly ? `${favorites.size} saved beat${favorites.size === 1 ? '' : 's'}` : '';
+        const battleSave = document.querySelector('.battle-result-save');
+        if (battleSave && battleResultBeatId) {
+            const saved = favorites.has(battleResultBeatId);
+            battleSave.setAttribute('aria-pressed', String(saved));
+            battleSave.textContent = saved ? '♥ Saved' : '♡ Save beat';
+        }
     }
 
     beatCards.forEach(card => {
@@ -506,6 +513,7 @@
     });
     renderFavorites();
 
+    let showComparisonPair;
     const compareDock = document.querySelector('.compare-dock');
     if (compareDock) {
         const selected = [null, null];
@@ -538,7 +546,7 @@
             });
 
             if (compareHelp) compareHelp.textContent = ready
-                ? 'Switch between A and B to hear each beat from the start.'
+                ? 'Switch at the same point during the first 15 seconds. Keys 1 and 2 work too.'
                 : 'Choose one more beat to compare.';
         };
 
@@ -568,12 +576,34 @@
             if (!audio.paused) {
                 audio.pause();
             } else {
+                const otherAudio = cardById.get(selected[1 - index])?.querySelector('audio');
+                const position = otherAudio && !otherAudio.paused && otherAudio.currentTime < 15
+                    ? otherAudio.currentTime : 0;
                 audioElements.forEach(other => { if (other !== audio) other.pause(); });
-                if (audio.readyState) audio.currentTime = 0;
+                const seek = () => {
+                    try { audio.currentTime = Math.min(position, Number.isFinite(audio.duration) ? Math.max(0, audio.duration - 0.1) : position); }
+                    catch { /* The player can still start at the beginning. */ }
+                };
+                if (audio.readyState) seek();
+                else audio.addEventListener('loadedmetadata', seek, { once: true });
                 audio.play().catch(() => {});
             }
             renderComparison();
         }));
+        showComparisonPair = (first, second) => {
+            audioElements.forEach(audio => audio.pause());
+            selected[0] = first;
+            selected[1] = second;
+            renderComparison();
+            slotButtons[0].focus();
+        };
+        document.addEventListener('keydown', event => {
+            if (event.repeat || event.altKey || event.ctrlKey || event.metaKey ||
+                !selected.every(Boolean) ||
+                (event.target instanceof Element &&
+                    event.target.closest('input, textarea, select, button, a, [contenteditable="true"]'))) return;
+            if (event.key === '1' || event.key === '2') slotButtons[Number(event.key) - 1].click();
+        });
         compareDock.querySelector('.compare-clear')?.addEventListener('click', () => {
             selected.forEach(id => cardById.get(id)?.querySelector('audio')?.pause());
             selected[0] = null;
@@ -581,6 +611,192 @@
             renderComparison();
         });
         renderComparison();
+    }
+
+    // A three-choice tournament uses the existing local beat players, so no extra media is fetched.
+    const battle = document.querySelector('.beat-battle');
+    if (battle && ['flor', 'dougie', 'weak', 'crip'].every(id => beatCards.some(card => card.dataset.beatId === id))) {
+        const cardById = new Map(beatCards.map(card => [card.dataset.beatId, card]));
+        const startButton = battle.querySelector('.battle-start');
+        const stage = battle.querySelector('.battle-stage');
+        const result = battle.querySelector('.battle-result');
+        const options = [...battle.querySelectorAll('.battle-option')];
+        const roundLabel = battle.querySelector('.battle-round-label');
+        const help = battle.querySelector('.battle-help');
+        const progressDots = [...battle.querySelectorAll('.battle-progress i')];
+        const resultName = battle.querySelector('.battle-result-name');
+        const resultListen = battle.querySelector('.battle-result-listen');
+        const resultCompare = battle.querySelector('.battle-result-compare');
+        const resultLicense = battle.querySelector('.battle-result-license');
+        const shareStatus = battle.querySelector('.battle-share-status');
+        const openingPairs = [['flor', 'dougie'], ['weak', 'crip']];
+        let round = 0;
+        let finalists = [];
+        let currentPair = openingPairs[0];
+        let battleAudio = null;
+
+        const getAudio = id => cardById.get(id)?.querySelector('audio');
+        const getBeatMeta = id => cardById.get(id)?.querySelector('.latest-info p')?.textContent || '';
+        const stopBattleAudio = () => {
+            if (!battleAudio) return;
+            battleAudio.pause();
+            battleAudio = null;
+        };
+
+        const renderPlayback = () => {
+            options.forEach(option => {
+                const id = option.dataset.beatId;
+                const playing = Boolean(id && battleAudio === getAudio(id) && !battleAudio.paused);
+                const button = option.querySelector('.battle-listen');
+                button.textContent = playing ? 'Ⅱ Pause preview' : '▶ Listen for 15s';
+                button.setAttribute('aria-label', `${playing ? 'Pause' : 'Play'} ${beatNames[id] || 'beat'} preview`);
+            });
+            const resultPlaying = battleResultBeatId && !getAudio(battleResultBeatId)?.paused;
+            resultListen.textContent = resultPlaying ? 'Ⅱ Pause beat' : '▶ Listen again';
+        };
+
+        const renderRound = () => {
+            currentPair = round < 2 ? openingPairs[round] : finalists;
+            stage.hidden = false;
+            result.hidden = true;
+            startButton.hidden = true;
+            roundLabel.textContent = `Round ${round + 1} of 3${round === 2 ? ' · Final' : ''}`;
+            progressDots.forEach((dot, index) => {
+                dot.classList.toggle('is-current', index === round);
+                dot.classList.toggle('is-complete', index < round);
+            });
+            options.forEach((option, index) => {
+                const id = currentPair[index];
+                const card = cardById.get(id);
+                option.dataset.beatId = id;
+                option.querySelector('img').src = card.querySelector('img').src;
+                option.querySelector('img').alt = `${beatNames[id]} cover art`;
+                option.querySelector('.battle-option-name').textContent = beatNames[id];
+                option.querySelector('.battle-option-meta').textContent = `${getBeatMeta(id)}${id === 'crip' ? ' · Preview only' : ''}`;
+                option.querySelector('.battle-pick').setAttribute('aria-label', `Choose ${beatNames[id]}${round === 2 ? ' as your match' : ' and continue'}`);
+                option.querySelector('.battle-preview-progress').value = 0;
+            });
+            help.textContent = 'Listen, then pick one to continue.';
+            renderPlayback();
+            roundLabel.focus();
+        };
+
+        const renderResult = (winner, runnerUp = null, shared = false) => {
+            stopBattleAudio();
+            battleResultBeatId = winner;
+            stage.hidden = true;
+            result.hidden = false;
+            startButton.hidden = true;
+            result.querySelector('.battle-result-art').src = cardById.get(winner).querySelector('img').src;
+            result.querySelector('.battle-result-art').alt = `${beatNames[winner]} cover art`;
+            resultName.textContent = beatNames[winner];
+            result.querySelector('.battle-result-meta').textContent = `${getBeatMeta(winner)}${runnerUp ? ` · Chosen over ${beatNames[runnerUp]}` : ''}`;
+            result.querySelector('.battle-result-kicker').textContent = shared ? 'A shared beat match.' : 'This one made it through.';
+            resultLicense.href = winner === 'crip' ? 'contact.html?beat=crip' : `licensing.html?beat=${winner}`;
+            resultLicense.textContent = winner === 'crip' ? 'Ask availability ↗' : 'Explore licensing ↗';
+            resultCompare.hidden = !runnerUp;
+            resultCompare.dataset.runnerUp = runnerUp || '';
+            shareStatus.textContent = '';
+            renderFavorites();
+            renderPlayback();
+            resultName.focus();
+        };
+
+        const start = () => {
+            stopBattleAudio();
+            battleResultBeatId = null;
+            finalists = [];
+            round = 0;
+            renderRound();
+        };
+
+        startButton.addEventListener('click', start);
+        battle.querySelector('.battle-stage-restart').addEventListener('click', start);
+        battle.querySelector('.battle-restart').addEventListener('click', start);
+        options.forEach(option => {
+            option.querySelector('.battle-listen').addEventListener('click', () => {
+                const id = option.dataset.beatId;
+                const audio = getAudio(id);
+                if (!audio) return;
+                if (battleAudio === audio && !audio.paused) {
+                    audio.pause();
+                    return;
+                }
+                stopBattleAudio();
+                battleAudio = audio;
+                if (audio.readyState) audio.currentTime = 0;
+                audio.play().catch(() => {
+                    battleAudio = null;
+                    help.textContent = 'Could not play this preview. Try the player in Featured beats below.';
+                    renderPlayback();
+                });
+                help.textContent = isMuted
+                    ? 'Local previews are muted. Use the sound button to hear them.'
+                    : `Listening to ${beatNames[id]} · first 15 seconds.`;
+                renderPlayback();
+            });
+            option.querySelector('.battle-pick').addEventListener('click', () => {
+                const id = option.dataset.beatId;
+                stopBattleAudio();
+                if (round < 2) {
+                    finalists.push(id);
+                    round += 1;
+                    renderRound();
+                } else {
+                    renderResult(id, currentPair.find(other => other !== id));
+                }
+            });
+        });
+
+        beatCards.forEach(card => {
+            const audio = card.querySelector('audio');
+            ['play', 'pause', 'ended'].forEach(type => audio?.addEventListener(type, () => {
+                if (type !== 'play' && audio === battleAudio) battleAudio = null;
+                renderPlayback();
+            }));
+            audio?.addEventListener('timeupdate', () => {
+                if (audio !== battleAudio) return;
+                const option = options.find(item => item.dataset.beatId === card.dataset.beatId);
+                if (option) option.querySelector('.battle-preview-progress').value = Math.min(15, audio.currentTime);
+                if (audio.currentTime < 15) return;
+                audio.pause();
+                battleAudio = null;
+                help.textContent = 'Preview complete. Pick your favourite or listen again.';
+                renderPlayback();
+            });
+        });
+
+        resultListen.addEventListener('click', () => {
+            const audio = getAudio(battleResultBeatId);
+            if (!audio) return;
+            if (audio.paused) {
+                if (audio.readyState) audio.currentTime = 0;
+                audio.play().catch(() => { shareStatus.textContent = 'Could not play this beat. Use the player below.'; });
+            } else audio.pause();
+        });
+        battle.querySelector('.battle-result-save').addEventListener('click', () => {
+            cardById.get(battleResultBeatId)?.querySelector('.beat-favorite')?.click();
+        });
+        resultCompare.addEventListener('click', () => {
+            if (battleResultBeatId && resultCompare.dataset.runnerUp) {
+                showComparisonPair?.(battleResultBeatId, resultCompare.dataset.runnerUp);
+            }
+        });
+        battle.querySelector('.battle-share').addEventListener('click', async () => {
+            const url = new URL('beats.html', window.location.href);
+            url.searchParams.set('match', battleResultBeatId);
+            url.hash = 'beat-battle';
+            try {
+                if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable');
+                await navigator.clipboard.writeText(url.href);
+                shareStatus.textContent = 'Result link copied.';
+            } catch {
+                shareStatus.textContent = `Copy this link: ${url.href}`;
+            }
+        });
+
+        const sharedMatch = new URLSearchParams(window.location.search).get('match');
+        if (Object.hasOwn(beatNames, sharedMatch)) renderResult(sharedMatch, null, true);
     }
 
     const pageParams = new URLSearchParams(window.location.search);
