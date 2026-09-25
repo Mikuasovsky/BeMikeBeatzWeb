@@ -25,8 +25,13 @@
     }
 
     const heroVideos = [...document.querySelectorAll('.hero-video')];
+    const hero = document.querySelector('.hero');
+    const canAnimateHero = () => heroVideos.length === 2 && !reduceMotion &&
+        !window.matchMedia('(max-width: 900px)').matches &&
+        !navigator.connection?.saveData &&
+        window.CSS?.supports('clip-path', 'circle(0% at 50% 50%)');
 
-    function updateHeroVideo() {
+    function updateHeroVideo(keepPlaying) {
         if (!heroVideos.length) return;
 
         const isLight = document.body.classList.contains('light-theme');
@@ -34,7 +39,7 @@
 
         heroVideos.forEach(video => {
             const source = video.querySelector('source[data-src]');
-            const shouldPlay = video.classList.contains(activeClass) && !reduceMotion &&
+            const shouldPlay = (video.classList.contains(activeClass) || video === keepPlaying) && !reduceMotion &&
                 !window.matchMedia('(max-width: 900px)').matches &&
                 !navigator.connection?.saveData;
 
@@ -67,15 +72,41 @@
     let themeTransitionTimer;
     if (themeToggle) {
         themeToggle.addEventListener('click', () => {
+            if (hero?.classList.contains('is-morphing')) return;
             window.clearTimeout(themeTransitionTimer);
             document.body.classList.add('theme-transition');
             void document.body.offsetWidth;
 
             window.requestAnimationFrame(() => {
                 const isLightTheme = document.body.classList.toggle('light-theme');
+                const incoming = heroVideos.find(video => video.classList.contains(
+                    isLightTheme ? 'hero-video-light' : 'hero-video-dark'
+                ));
+                const outgoing = heroVideos.find(video => video !== incoming);
+
+                if (canAnimateHero() && incoming && outgoing) {
+                    // Keep the old scene moving while the new scene grows from its centre.
+                    hero.classList.add('is-morphing');
+                    incoming.classList.add('is-incoming');
+                    outgoing.classList.add('is-outgoing');
+                    updateHeroVideo(outgoing);
+                    void hero.offsetWidth;
+                    window.requestAnimationFrame(() => incoming.classList.add('is-revealing'));
+
+                    window.setTimeout(() => {
+                        hero.classList.add('is-morph-complete');
+                        incoming.classList.remove('is-incoming', 'is-revealing');
+                        outgoing.classList.remove('is-outgoing');
+                        hero.classList.remove('is-morphing');
+                        updateHeroVideo();
+                        window.requestAnimationFrame(() => hero.classList.remove('is-morph-complete'));
+                    }, 1450);
+                } else {
+                    updateHeroVideo();
+                }
+
                 storage.setItem('bemike-theme', isLightTheme ? 'light' : 'dark');
                 updateThemeToggle();
-                updateHeroVideo();
 
                 themeTransitionTimer = window.setTimeout(() => {
                     document.body.classList.remove('theme-transition');

@@ -2516,6 +2516,52 @@ body.home-page.light-theme::before { background: #000; }
 
 /* Crisp original video, without scaling or softening effects. */
 .hero-video { filter: none; transform: none; }
+
+/* The next scene opens over the current one, following the planet's outline. */
+.hero.is-morphing .hero-video,
+.hero.is-morph-complete .hero-video { transition: none !important; }
+.hero.is-morphing .hero-video.is-outgoing {
+    z-index: 1;
+    opacity: 1;
+}
+.hero.is-morphing .hero-video.is-incoming {
+    z-index: 2;
+    opacity: 1;
+    clip-path: circle(0% at 50% 50%);
+    transition: clip-path 1250ms cubic-bezier(.22,.7,.2,1) !important;
+}
+.hero.is-morphing .hero-video.is-incoming.is-revealing {
+    clip-path: circle(150% at 50% 50%);
+}
+.hero-transform-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 3;
+    width: min(72vw, 85vh);
+    aspect-ratio: 1;
+    border: 2px solid rgba(255, 132, 45, .8);
+    border-radius: 50%;
+    box-shadow: 0 0 32px 12px rgba(255, 96, 15, .5),
+                inset 0 0 32px 12px rgba(255, 96, 15, .25);
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(.05);
+    pointer-events: none;
+}
+body.light-theme .hero-transform-ring {
+    border-color: rgba(224, 233, 255, .88);
+    box-shadow: 0 0 36px 14px rgba(188, 211, 255, .5),
+                inset 0 0 36px 14px rgba(188, 211, 255, .3);
+}
+.hero.is-morphing .hero-transform-ring {
+    animation: heroTransformRing 1250ms cubic-bezier(.22,.7,.2,1) both;
+}
+@keyframes heroTransformRing {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(.05); }
+    18% { opacity: .8; }
+    65% { opacity: .5; }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(3); }
+}
 @media (hover: hover) and (pointer: fine) {
     .project-card:hover, .latest-card.animate:hover,
     .service-card.animate:hover, .featured-card.animate:hover {
@@ -2524,6 +2570,7 @@ body.home-page.light-theme::before { background: #000; }
     }
 }
 @media (prefers-reduced-motion: reduce) {
+    .hero-transform-ring { display: none; }
     *, *::before, *::after {
         animation-duration: .01ms !important;
         animation-iteration-count: 1 !important;
