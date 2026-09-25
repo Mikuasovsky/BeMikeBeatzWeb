@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeMikeBeatz — Trap & Boom Bap Producer</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body class="home-page">
+
+    <!-- NAVBAR -->
+
+<header class="navbar">
+    <div class="header-left">
+        <a class="logo-link" href="index.html" aria-label="BeMikeBeatz home">
+            <span class="logo">BeMikeBeatz</span>
+        </a>
+    </div>
+
+    <nav class="header-center" aria-label="Main navigation">
+        <a href="index.html" aria-current="page">Home</a>
+        <a href="beats.html">Beats</a>
+        <a href="projects.html">Projects</a>
+        <a href="about.html">About</a>
+        <a href="licensing.html">Licensing</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+
+    <div class="header-right">
+        <button class="header-icon-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-navigation">
+            <span class="menu-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+            <img class="header-icon" src="assets/images/bemike3.png" alt="">
+        </button>
+    </div>
+    
+</header>
+
+
+
+
+    <!-- HERO -->
+    <section class="hero">
+    <video muted loop playsinline preload="none" poster="assets/images/hero-dark.jpg" class="hero-video hero-video-dark" aria-hidden="true">
+        <source data-src="assets/video/background6.mp4" type="video/mp4">
+    </video>
+
+    <video muted loop playsinline preload="none" poster="assets/images/hero-light.jpg" class="hero-video hero-video-light" aria-hidden="true">
+        <source data-src="assets/video/background4.mp4" type="video/mp4">
+    </video>
+
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+        <h2 class="hero-title">Trap & Boom Bap Producer</h2>
+        <p class="hero-subtitle">PT × USA • Aggressive, melodic & underground beats</p>
+
+        <div class="hero-buttons">
+            <a class="btn" href="beats.html">Browse Beats</a>
+            <a class="btn-outline" href="contact.html">Custom Beat</a>
+        </div>
+    </div>
+</section>
+
+
+    <!-- ABOUT -->
+    <section class="about-preview reveal">
+        <h3>Who is BeMikeBeatz?</h3>
+        <p>
+            PT/USA producer focused on aggressive trap, dark melodies and classic boom bap.  
+            Beats crafted for artists seeking identity, quality and impact.
+        </p>
+        <a class="btn-small" href="about.html">Learn more</a>
+    </section>
+
+
+<section class="visualizer-section top">
+    <canvas class="beats-visualizer" id="beats-visualizer-top"></canvas>
+</section>
+
+
+    <!-- ÚLTIMOS BEATS -->
+    
+    <section class="latest-beats reveal">
+    <h3>Latest Beats</h3>
+
+    <div class="latest-grid">
+
+        <!-- BEAT 1 -->
+        <div class="latest-card">
+            <img src="assets/beats/flor.jpeg" alt="Dark Trap Beat">
+            <div class="latest-info">
+                <h4>Flor</h4>
+                <p>140 BPM</p>
+                <audio controls preload="none">
+                    <source src="assets/beats/Flor(140bpm)@bemike_beatz.mp3" type="audio/mpeg">
+                </audio>
+            </div>
+        </div>
+
+        <!-- BEAT 2 -->
+        <div class="latest-card">
+            <img src="assets/beats/dougie.jpeg" alt="Emotional Trap Beat">
+            <div class="latest-info">
+                <h4>Dougie</h4>
+                <p>100 BPM</p>
+                <audio controls preload="none">
+                    <source src="assets/beats/Jotinha.mp3" type="audio/mpeg">
+                </audio>
+            </div>
+        </div>
+
+        <!-- BEAT 3 -->
+        <div class="latest-card">
+            <img src="assets/beats/week.jpeg" alt="Boom Bap Classic">
+            <div class="latest-info">
+                <h4>Weak</h4>
+                <p>133 BPM</p>
+                <audio controls preload="none">
+                    <source src="assets/beats/Week.mp3" type="audio/mpeg">
+                </audio>
+            </div>
+        </div>
+
+        <div class="latest-card crip-card">
+            <img src="assets/beats/blueface.jpeg" alt="Crip beat cover" loading="lazy" decoding="async">
+            <div class="latest-info">
+                <h4>Crip</h4>
+                <span class="unreleased-tag">unreleased</span>
+                <p>91 BPM</p>
+                <audio id="crip-audio" controls preload="none">
+                    <source src="assets/beats/BlueFace-preview.mp3" type="audio/mpeg">
+                </audio>
+            </div>
+        </div>
+
+    </div>
+    <br><br><br>
+    <a class="btn" href="beats.html">See all beats</a>
+</section>
+
+
+<section class="visualizer-section">
+    <canvas class="beats-visualizer" id="beats-visualizer"></canvas>
+</section>
+
+    <!-- SERVICES -->
+    <section class="services">
+        <h3>Services</h3>
+
+        <div class="service-grid">
+
+            <div class="service-card">
+                <h4>Custom Beats</h4>
+                <p>Exclusive production tailored to your vision.</p>
+            </div>
+
+            <div class="service-card">
+                <h4>Mix & Master</h4>
+                <p>Professional sound ready for release.</p>
+            </div>
+
+            <div class="service-card">
+                <h4>Beat Packs</h4>
+                <p>Themed packs with unreleased beats.</p>
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- FINAL CTA -->
+    <section class="final-cta">
+        <h3>Ready to elevate your sound?</h3>
+        <p>Choose a beat or request an exclusive.</p><br>
+        <a class="btn" href="contact.html">Get in touch</a>
+    </section>
+<section class="section-divider-ultra"></section>
+
+    <!-- FOOTER -->
+    <button class="floating-brand" type="button" aria-label="Switch to light theme" aria-pressed="false">
+        <img src="assets/images/bemike.png" alt="BeMike logo">
+    </button>
+
+    <button class="floating-mute" type="button" aria-label="Mute local beat previews" title="Mute local beat previews" aria-pressed="false">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <line x1="23" y1="9" x2="17" y2="15"></line>
+            <line x1="17" y1="9" x2="23" y2="15"></line>
+        </svg>
+    </button>
+
+    <footer>
+        <p>© 2026 BeMikeBeatz — Trap & Boom Bap Producer</p>
+    </footer>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

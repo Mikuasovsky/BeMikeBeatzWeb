@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="BeMikeBeatz — visual projects and music videos built around the beats.">
+    <title>Projects — BeMikeBeatz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="projects-page">
+<header class="navbar">
+    <div class="header-left">
+        <a class="logo-link" href="index.html" aria-label="BeMikeBeatz home"><span class="logo">BeMikeBeatz</span></a>
+    </div>
+    <nav class="header-center" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="beats.html">Beats</a>
+        <a href="projects.html" aria-current="page">Projects</a>
+        <a href="about.html">About</a>
+        <a href="licensing.html">Licensing</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+    <div class="header-right">
+        <button class="header-icon-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-navigation">
+            <span class="menu-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+            <img class="header-icon" src="assets/images/bemike3.png" alt="">
+        </button>
+    </div>
+</header>
+
+<main>
+    <section class="projects-hero">
+        <div class="projects-hero-copy reveal reveal-up">
+            <p class="projects-eyebrow">The visual side of the sound</p>
+            <h1>Beats that<br><span>look like something.</span></h1>
+            <p>Visual pieces, beat videos and mood-driven clips built around the sound. Press play and step inside the world of each production.</p>
+            <a class="btn magnetic" href="#projects-grid">Explore projects <span aria-hidden="true">↓</span></a>
+        </div>
+        <div class="projects-hero-orbit parallax" data-speed="0.12" aria-hidden="true"></div>
+        <div class="projects-hero-grid" aria-hidden="true"></div>
+    </section>
+
+    <section class="projects-intro reveal reveal-up">
+        <div><span class="section-index">01</span><h2>Visual catalogue</h2></div>
+        <p>Use this space for the MP4 visualisers, mini music videos and cinematic clips that give each beat its own identity.</p>
+    </section>
+
+    <section id="projects-grid" class="projects-grid" aria-label="Visual projects">
+        <article class="project-card project-card-featured reveal reveal-up" data-video="assets/video/background6.mp4">
+            <div class="project-media">
+                <video muted loop playsinline preload="metadata" poster="assets/beats/flor.jpeg">
+                    <source src="assets/video/background6.mp4" type="video/mp4">
+                </video>
+                <button class="project-play" type="button" aria-label="Play Flor visual"><span>▶</span></button>
+                <span class="project-tag">Featured visual</span>
+            </div>
+            <div class="project-info"><div><p class="project-meta">01 / Flor · 140 BPM</p><h3>Flor</h3></div><span class="project-arrow">↗</span></div>
+        </article>
+
+        <article class="project-card reveal reveal-up" data-video="assets/video/background3.mp4">
+            <div class="project-media">
+                <video muted loop playsinline preload="metadata" poster="assets/beats/blueface.jpeg"><source src="assets/video/background3.mp4" type="video/mp4"></video>
+                <button class="project-play" type="button" aria-label="Play BlueFace visual"><span>▶</span></button>
+                <span class="project-tag">Visual</span>
+            </div>
+            <div class="project-info"><div><p class="project-meta">02 / BlueFace</p><h3>BlueFace</h3></div><span class="project-arrow">↗</span></div>
+        </article>
+
+        <article class="project-card reveal reveal-up" data-video="assets/video/background4.mp4">
+            <div class="project-media">
+                <video muted loop playsinline preload="metadata" poster="assets/beats/dougie.jpeg"><source src="assets/video/background4.mp4" type="video/mp4"></video>
+                <button class="project-play" type="button" aria-label="Play Dougie visual"><span>▶</span></button>
+                <span class="project-tag">Visual</span>
+            </div>
+            <div class="project-info"><div><p class="project-meta">03 / Dougie</p><h3>Dougie</h3></div><span class="project-arrow">↗</span></div>
+        </article>
+
+        <article class="project-card project-card-tall reveal reveal-up" data-video="assets/video/background5.mp4">
+            <div class="project-media">
+                <video muted loop playsinline preload="metadata" poster="assets/beats/week.jpeg"><source src="assets/video/background5.mp4" type="video/mp4"></video>
+                <button class="project-play" type="button" aria-label="Play Weak visual"><span>▶</span></button>
+                <span class="project-tag">Visual</span>
+            </div>
+            <div class="project-info"><div><p class="project-meta">04 / Weak · 133 BPM</p><h3>Weak</h3></div><span class="project-arrow">↗</span></div>
+        </article>
+
+        <article class="project-card project-card-wide reveal reveal-up" data-video="assets/video/background.mp4">
+            <div class="project-media">
+                <video muted loop playsinline preload="metadata" poster="assets/beats/flor.jpeg"><source src="assets/video/background.mp4" type="video/mp4"></video>
+                <button class="project-play" type="button" aria-label="Play studio visual"><span>▶</span></button>
+                <span class="project-tag">Behind the sound</span>
+            </div>
+            <div class="project-info"><div><p class="project-meta">05 / Studio cut</p><h3>Behind the sound</h3></div><span class="project-arrow">↗</span></div>
+        </article>
+    </section>
+
+    <section class="projects-cta reveal reveal-up">
+        <p>Have a visual for one of the beats?</p>
+        <h2>Let's put it<br>on the wall.</h2>
+        <a class="btn magnetic" href="contact.html">Get in touch <span aria-hidden="true">↗</span></a>
+    </section>
+</main>
+
+<button class="floating-brand" type="button" aria-label="Switch to light theme" aria-pressed="false">
+    <img src="assets/images/bemike.png" alt="BeMike logo">
+</button>
+
+<dialog class="video-modal" aria-hidden="true" aria-label="Project video">
+    <button class="video-modal-close" type="button" aria-label="Close video">×</button>
+    <div class="video-modal-inner"><video controls playsinline></video></div>
+</dialog>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>

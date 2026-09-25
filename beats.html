@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeMikeBeatz — Catálogo Oficial</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <div class="header-left">
+            <a class="logo-link" href="index.html" aria-label="BeMikeBeatz home">
+                <span class="logo">BeMikeBeatz</span>
+            </a>
+        </div>
+
+        <nav class="header-center" aria-label="Main navigation">
+            <a href="index.html">Home</a>
+            <a href="beats.html" aria-current="page">Beats</a>
+            <a href="projects.html">Projects</a>
+            <a href="about.html">About</a>
+            <a href="licensing.html">Licensing</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+
+        <div class="header-right">
+            <button class="header-icon-button" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-navigation">
+                <span class="menu-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+                <img class="header-icon" src="assets/images/bemike3.png" alt="">
+            </button>
+        </div>
+    </header>
+
+    <main class="beats-page">
+    <!-- CATALOG INTRO -->
+    <section class="catalog-header">
+        <div class="catalog-copy">
+            <p class="catalog-eyebrow">The beat catalogue</p>
+            <h1>Find the right<br>sound for it.</h1>
+            <p class="catalog-description">Browse trap, boom bap and melodic productions made for records with presence, character and impact.</p>
+            <div class="catalog-actions">
+                <a class="btn" href="#beatstars-player">Browse the catalogue</a>
+                <a class="btn-outline" href="contact.html">Need a custom beat?</a>
+            </div>
+            <p class="catalog-note">Preview, choose a license and make the track yours.</p>
+        </div>
+    </section>
+
+    <p class="catalog-note" style="text-align:center">The floating sound button controls local previews only. Use the BeatStars player controls for the catalogue.</p>
+    <!-- PLAYER OFICIAL -->
+    <section class="player-section" id="beatstars-player">
+        <div class="player-wrapper">
+            <!-- Substituir XXXXXX pelo teu storeId -->
+            <iframe 
+                src="https://player.beatstars.com/?storeId=152985"
+                width="100%" 
+                height="600" 
+                frameborder="0"
+                loading="lazy"
+                title="BeMikeBeatz beat catalogue">
+            </iframe>
+        </div>
+    </section>
+
+    
+
+
+    <!-- FEATURED BEATS -->
+    <section class="featured-beats">
+        <h3>Featured Beats</h3>
+
+        <div class="latest-grid">
+            <div class="latest-card">
+                <img src="assets/beats/flor.jpeg" alt="Flor beat cover" loading="lazy" decoding="async">
+                <div class="latest-info">
+                    <h4>Flor</h4>
+                    <p>140 BPM</p>
+                    <audio controls preload="none">
+                        <source src="assets/beats/Flor(140bpm)@bemike_beatz.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+            </div>
+
+            <div class="latest-card">
+                <img src="assets/beats/dougie.jpeg" alt="Dougie beat cover" loading="lazy" decoding="async">
+                <div class="latest-info">
+                    <h4>Dougie</h4>
+                    <p>100 BPM</p>
+                    <audio controls preload="none">
+                        <source src="assets/beats/Jotinha.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+            </div>
+
+            <div class="latest-card">
+                <img src="assets/beats/week.jpeg" alt="Weak beat cover" loading="lazy" decoding="async">
+                <div class="latest-info">
+                    <h4>Weak</h4>
+                    <p>133 BPM</p>
+                    <audio controls preload="none">
+                        <source src="assets/beats/Week.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+            </div>
+
+            <div class="latest-card crip-card">
+                <img src="assets/beats/blueface.jpeg" alt="Crip beat cover" loading="lazy" decoding="async">
+                <div class="latest-info">
+                    <h4>Crip</h4>
+                    <span class="unreleased-tag">unreleased</span>
+                    <p>91 BPM</p>
+                    <audio id="crip-audio" controls preload="none" data-preview-duration="15">
+                        <source src="assets/beats/BlueFace-preview.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section-divider-ultra"></section>
+    </main>
+
+    <!-- FOOTER -->
+    <button class="floating-brand" type="button" aria-label="Switch to light theme" aria-pressed="false">
+        <img src="assets/images/bemike.png" alt="BeMike logo">
+    </button>
+
+    <button class="floating-mute" type="button" aria-label="Mute local beat previews" title="Mute local beat previews" aria-pressed="false">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <line x1="23" y1="9" x2="17" y2="15"></line>
+            <line x1="17" y1="9" x2="23" y2="15"></line>
+        </svg>
+    </button>
+
+    <footer>
+        <p>© 2026 BeMikeBeatz — Trap & Boom Bap Producer</p>
+    </footer>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>
