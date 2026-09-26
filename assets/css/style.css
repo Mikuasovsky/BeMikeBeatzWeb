@@ -260,7 +260,7 @@ body.light-theme .hero-video-light {
 
 .hero-content {
     position: relative;
-    z-index: 3;
+    z-index: 4;
     text-align: center;
     text-shadow: 0 2px 12px rgba(0,0,0,0.85);
 }
@@ -2532,7 +2532,7 @@ body.home-page.light-theme::before { background: #000; }
 /* Crisp original video, without scaling or softening effects. */
 .hero-video { filter: none; transform: none; }
 
-/* The aligned planet surfaces blend in place; a brief glow marks the change. */
+/* An eclipse hides the surface change while the planet stays fixed in place. */
 .hero.is-morphing .hero-video,
 .hero.is-morph-complete .hero-video { transition: none !important; }
 .hero.is-morphing .hero-video.is-outgoing {
@@ -2544,38 +2544,47 @@ body.home-page.light-theme::before { background: #000; }
     opacity: 0;
 }
 .hero.is-revealing .hero-video.is-incoming {
-    animation: heroPlanetTransform 1000ms ease-in-out both;
+    animation: heroEclipseSwap var(--hero-morph-duration, 1400ms) linear both;
 }
-@keyframes heroPlanetTransform {
-    0% { opacity: 0; }
-    20% { opacity: .12; }
-    55% { opacity: .62; }
-    100% { opacity: 1; }
+@keyframes heroEclipseSwap {
+    0%, 42% { opacity: 0; }
+    58%, 100% { opacity: 1; }
 }
-.hero-transform-ring {
+.hero-eclipse {
     position: absolute;
     top: 50%;
     left: 50%;
     z-index: 3;
-    width: var(--hero-ring-diameter, min(72vw, 85vh));
+    width: var(--hero-planet-diameter, min(84vw, 90vh));
     aspect-ratio: 1;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(255, 170, 85, .04) 40%, rgba(255, 115, 35, .19) 64%, transparent 78%);
-    mix-blend-mode: screen;
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(.99);
+    overflow: hidden;
+    visibility: hidden;
+    transform: translate(-50%, -50%);
     pointer-events: none;
 }
-body.light-theme .hero-transform-ring {
-    background: radial-gradient(circle, rgba(215, 228, 255, .04) 40%, rgba(188, 211, 255, .2) 64%, transparent 78%);
+.hero-eclipse-shadow {
+    position: absolute;
+    inset: -8%;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, #020205 0 95%, rgba(2, 2, 5, .88) 98%, transparent 100%);
+    transform: translateX(-115%);
 }
-.hero.is-revealing .hero-transform-ring {
-    animation: heroSurfaceGlow 1000ms ease-in-out both;
+.hero[data-morph-to="sun"] .hero-eclipse-shadow { transform: translateX(115%); }
+.hero.is-revealing .hero-eclipse { visibility: visible; }
+.hero.is-revealing .hero-eclipse-shadow {
+    animation: heroEclipsePass var(--hero-morph-duration, 1400ms) cubic-bezier(.4, 0, .2, 1) both;
 }
-@keyframes heroSurfaceGlow {
-    0% { opacity: 0; transform: translate(-50%, -50%) scale(.99); }
-    50% { opacity: .5; transform: translate(-50%, -50%) scale(1.02); }
-    100% { opacity: 0; transform: translate(-50%, -50%) scale(1.04); }
+.hero.is-revealing[data-morph-to="sun"] .hero-eclipse-shadow { animation-name: heroEclipseReturn; }
+@keyframes heroEclipsePass {
+    0% { transform: translateX(-115%); }
+    42%, 58% { transform: translateX(0); }
+    100% { transform: translateX(115%); }
+}
+@keyframes heroEclipseReturn {
+    0% { transform: translateX(115%); }
+    42%, 58% { transform: translateX(0); }
+    100% { transform: translateX(-115%); }
 }
 @media (hover: hover) and (pointer: fine) {
     .project-card:hover, .latest-card.animate:hover,
@@ -2585,7 +2594,7 @@ body.light-theme .hero-transform-ring {
     }
 }
 @media (prefers-reduced-motion: reduce) {
-    .hero-transform-ring { display: none; }
+    .hero-eclipse { display: none; }
     *, *::before, *::after {
         animation-duration: .01ms !important;
         animation-iteration-count: 1 !important;

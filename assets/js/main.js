@@ -26,16 +26,17 @@
 
     const heroVideos = [...document.querySelectorAll('.hero-video')];
     const hero = document.querySelector('.hero');
-    const heroMorphDuration = 1000;
+    const heroMorphDuration = 1400;
     const canPlayHeroVideo = () => !reduceMotion &&
         !window.matchMedia('(max-width: 900px)').matches && !navigator.connection?.saveData;
     const canAnimateHero = () => hero && heroVideos.length === 2 && !reduceMotion;
 
-    function setHeroHaloSize() {
+    function setHeroPlanetSize() {
         const { width, height } = hero.getBoundingClientRect();
-        // Match the fixed glow to the planet in the two 2560 × 1440 scenes.
+        // The eclipse stays inside the planet in the two 2560 × 1440 scenes.
         const planetRadius = 610 * Math.max(width / 2560, height / 1440);
-        hero.style.setProperty('--hero-ring-diameter', `${planetRadius * 2}px`);
+        hero.style.setProperty('--hero-planet-diameter', `${planetRadius * 2}px`);
+        hero.style.setProperty('--hero-morph-duration', `${heroMorphDuration}ms`);
     }
 
     function primeHeroVideo(video) {
@@ -66,7 +67,7 @@
         return firstFrame;
     }
 
-    function updateHeroVideo(keepPlaying) {
+    function updateHeroVideo() {
         if (!heroVideos.length) return;
 
         const isLight = document.body.classList.contains('light-theme');
@@ -74,7 +75,9 @@
 
         heroVideos.forEach(video => {
             const source = video.querySelector('source[data-src]');
-            const shouldPlay = (video.classList.contains(activeClass) || video === keepPlaying) && canPlayHeroVideo();
+            const partOfMorph = hero?.classList.contains('is-morphing') &&
+                (video.classList.contains('is-incoming') || video.classList.contains('is-outgoing'));
+            const shouldPlay = (video.classList.contains(activeClass) || partOfMorph) && canPlayHeroVideo();
 
             if (shouldPlay && source && !source.getAttribute('src')) {
                 source.src = source.dataset.src;
@@ -108,6 +111,7 @@
         themeToggle.addEventListener('click', async () => {
             if (switchingTheme) return;
             switchingTheme = true;
+            themeToggle.setAttribute('aria-busy', 'true');
             window.clearTimeout(themeTransitionTimer);
             const isLightTheme = !document.body.classList.contains('light-theme');
             const incoming = heroVideos.find(video => video.classList.contains(
@@ -117,7 +121,8 @@
             const morph = canAnimateHero() && incoming && outgoing;
 
             if (morph) {
-                setHeroHaloSize();
+                setHeroPlanetSize();
+                hero.dataset.morphTo = isLightTheme ? 'moon' : 'sun';
                 hero.classList.add('is-morphing');
                 incoming.classList.add('is-incoming');
                 outgoing.classList.add('is-outgoing');
@@ -128,29 +133,52 @@
             document.body.classList.add('theme-transition');
             void document.body.offsetWidth;
             window.requestAnimationFrame(() => {
-                document.body.classList.toggle('light-theme', isLightTheme);
-                storage.setItem('bemike-theme', isLightTheme ? 'light' : 'dark');
-                updateThemeToggle();
-                updateHeroVideo(morph ? outgoing : undefined);
+                let appliedTheme = false;
+                const applyTheme = () => {
+                    if (appliedTheme) return;
+                    appliedTheme = true;
+                    document.body.classList.toggle('light-theme', isLightTheme);
+                    storage.setItem('bemike-theme', isLightTheme ? 'light' : 'dark');
+                    updateThemeToggle();
+                    updateHeroVideo();
+                };
 
                 if (morph) {
-                    hero.classList.add('is-revealing');
-                    window.setTimeout(() => {
+                    let finished = false;
+                    let fallbackTimer;
+                    const swapTimer = window.setTimeout(applyTheme, heroMorphDuration / 2);
+                    const finish = () => {
+                        if (finished) return;
+                        finished = true;
+                        window.clearTimeout(swapTimer);
+                        window.clearTimeout(fallbackTimer);
+                        incoming.removeEventListener('animationend', onAnimationEnd);
+                        applyTheme();
                         hero.classList.add('is-morph-complete');
                         hero.classList.remove('is-morphing', 'is-revealing');
                         incoming.classList.remove('is-incoming');
                         outgoing.classList.remove('is-outgoing');
+                        delete hero.dataset.morphTo;
                         updateHeroVideo();
                         window.requestAnimationFrame(() => hero.classList.remove('is-morph-complete'));
+                        themeToggle.removeAttribute('aria-busy');
                         switchingTheme = false;
-                    }, heroMorphDuration);
+                    };
+                    const onAnimationEnd = event => {
+                        if (event.animationName === 'heroEclipseSwap') finish();
+                    };
+                    incoming.addEventListener('animationend', onAnimationEnd);
+                    hero.classList.add('is-revealing');
+                    fallbackTimer = window.setTimeout(finish, heroMorphDuration + 180);
                 } else {
+                    applyTheme();
+                    themeToggle.removeAttribute('aria-busy');
                     switchingTheme = false;
                 }
 
                 themeTransitionTimer = window.setTimeout(() => {
                     document.body.classList.remove('theme-transition');
-                }, reduceMotion ? 0 : morph ? heroMorphDuration + 50 : 650);
+                }, reduceMotion ? 0 : morph ? heroMorphDuration + 250 : 650);
             });
         });
     }
