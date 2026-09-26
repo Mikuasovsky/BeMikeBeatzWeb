@@ -26,18 +26,21 @@
 
     const heroVideos = [...document.querySelectorAll('.hero-video')];
     const hero = document.querySelector('.hero');
-    const heroMorphDuration = 1400;
+    const heroMorphDuration = 2200;
     const canPlayHeroVideo = () => !reduceMotion &&
         !window.matchMedia('(max-width: 900px)').matches && !navigator.connection?.saveData;
     const canAnimateHero = () => hero && heroVideos.length === 2 && !reduceMotion;
 
     function setHeroPlanetSize() {
         const { width, height } = hero.getBoundingClientRect();
-        // The eclipse stays inside the planet in the two 2560 × 1440 scenes.
-        const planetRadius = 610 * Math.max(width / 2560, height / 1440);
-        hero.style.setProperty('--hero-planet-diameter', `${planetRadius * 2}px`);
+        const diameter = 1220 * Math.max(width / 2560, height / 1440);
+        hero.style.setProperty('--hero-planet-diameter', `${diameter}px`);
         hero.style.setProperty('--hero-morph-duration', `${heroMorphDuration}ms`);
     }
+
+    window.addEventListener('resize', () => {
+        if (hero?.classList.contains('is-morphing')) setHeroPlanetSize();
+    });
 
     function primeHeroVideo(video) {
         if (!canPlayHeroVideo()) return Promise.resolve();
@@ -127,7 +130,7 @@
                 incoming.classList.add('is-incoming');
                 outgoing.classList.add('is-outgoing');
                 // Commit the hidden layer before loading/playing it: video posters and
-                // decoded frames can otherwise reach the compositor before the eclipse.
+                // decoded frames can otherwise reach the compositor before the surface blend.
                 void incoming.offsetWidth;
                 await primeHeroVideo(incoming);
             }
@@ -139,8 +142,6 @@
                 const applyTheme = () => {
                     if (appliedTheme) return;
                     appliedTheme = true;
-                    // Reveal only while the eclipse fully covers the planet.
-                    if (morph) hero.classList.add('is-surface-ready');
                     document.body.classList.toggle('light-theme', isLightTheme);
                     storage.setItem('bemike-theme', isLightTheme ? 'light' : 'dark');
                     updateThemeToggle();
@@ -158,8 +159,9 @@
                         window.clearTimeout(fallbackTimer);
                         incoming.removeEventListener('animationend', onAnimationEnd);
                         applyTheme();
+                        // Commit the final scene before dropping its animation layer.
                         hero.classList.add('is-morph-complete');
-                        hero.classList.remove('is-morphing', 'is-revealing', 'is-surface-ready');
+                        hero.classList.remove('is-morphing', 'is-revealing');
                         incoming.classList.remove('is-incoming');
                         outgoing.classList.remove('is-outgoing');
                         delete hero.dataset.morphTo;
@@ -169,11 +171,12 @@
                         switchingTheme = false;
                     };
                     const onAnimationEnd = event => {
-                        if (event.animationName === 'heroEclipseSwap') finish();
+                        if (event.target === incoming && event.animationName === 'heroSurfaceBlend') finish();
                     };
                     incoming.addEventListener('animationend', onAnimationEnd);
+                    // Opacity blends run in the compositor; no per-frame masks or layout.
                     hero.classList.add('is-revealing');
-                    fallbackTimer = window.setTimeout(finish, heroMorphDuration + 180);
+                    fallbackTimer = window.setTimeout(finish, heroMorphDuration + 250);
                 } else {
                     applyTheme();
                     themeToggle.removeAttribute('aria-busy');

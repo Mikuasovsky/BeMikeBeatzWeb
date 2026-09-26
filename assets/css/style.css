@@ -258,11 +258,13 @@ body.light-theme .hero-video-light {
     transition: opacity 550ms ease;
 }
 
+/* Hero copy stays white while the page's inherited text color changes theme. */
 .hero-content {
     position: relative;
     z-index: 4;
+    color: #fff;
     text-align: center;
-    text-shadow: 0 2px 12px rgba(0,0,0,0.85);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9), 0 0 18px rgba(0, 0, 0, 0.55);
 }
 
 .hero-content .hero-title {
@@ -325,6 +327,12 @@ body.light-theme .hero-video-light {
 
 .btn-outline:active {
     transform: translateY(-1px) scale(.995);
+}
+
+.hero-buttons .btn-outline {
+    color: #fff;
+    transition: transform 200ms cubic-bezier(.2,.9,.2,1), box-shadow 200ms ease,
+                background-color 160ms ease, border-color 550ms ease;
 }
 
 body:not(.light-theme) .hero-buttons .btn-outline {
@@ -969,9 +977,10 @@ footer {
     place-items: center;
     border: 1px solid rgba(195, 0, 0, 0.6);
     border-radius: 50%;
-    background: rgba(0, 0, 0, 0.72);
+    background-color: #080808;
     box-shadow: 0 0 18px rgba(195, 0, 0, 0.45);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    transition: transform 250ms ease, box-shadow 250ms ease,
+                background-color 550ms ease, border-color 550ms ease, color 550ms ease;
 }
 
 .floating-brand img {
@@ -1003,9 +1012,10 @@ footer {
     place-items: center;
     border: 1px solid rgba(195, 0, 0, 0.6);
     border-radius: 50%;
-    background: rgba(0, 0, 0, 0.72);
+    background-color: #080808;
     box-shadow: 0 0 18px rgba(195, 0, 0, 0.45);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    transition: transform 250ms ease, box-shadow 250ms ease,
+                background-color 550ms ease, border-color 550ms ease, color 550ms ease;
 }
 
 .floating-mute svg {
@@ -1013,7 +1023,7 @@ footer {
     height: 32px;
     color: #fff;
     filter: drop-shadow(0 0 7px rgba(195, 0, 0, 0.75));
-    transition: transform 900ms cubic-bezier(.2,.8,.2,1), filter 900ms ease;
+    transition: color 550ms ease, filter 550ms ease;
 }
 
 .floating-mute:hover {
@@ -1024,7 +1034,6 @@ footer {
 .floating-mute[aria-pressed="true"] svg {
     color: #C30000;
     filter: drop-shadow(0 0 12px rgba(195, 0, 0, 0.9));
-    transition: color 0.3s ease, filter 0.3s ease;
 }
 
 body.light-theme .floating-mute[aria-pressed="true"] svg {
@@ -1062,11 +1071,6 @@ body.light-theme .hero-overlay {
     opacity: 0;
 }
 
-body.light-theme .hero-content {
-    color: #fff;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9), 0 0 18px rgba(0, 0, 0, 0.55);
-}
-
 body.light-theme .hero-video-light {
     filter: none;
 }
@@ -1093,11 +1097,6 @@ body.theme-transition > main {
 body.theme-transition .hero-video { transition: opacity 600ms ease; }
 body.theme-transition .hero-overlay,
 body.theme-transition .hero::after { transition: opacity 550ms ease; }
-body.theme-transition .floating-brand img {
-    transform: rotate(12deg) scale(1.04);
-    transition: transform 300ms ease;
-}
-
 body.light-theme .hero::after {
     opacity: 0;
 }
@@ -1150,20 +1149,18 @@ body.light-theme .license-row:hover {
 }
 
 body.light-theme .floating-brand {
-    background: rgba(244, 241, 235, 0.88);
+    background-color: #f4f1eb;
     border-color: rgba(195, 0, 0, 0.8);
 }
 
 body.light-theme .floating-mute {
-    background: rgba(244, 241, 235, 0.88);
+    background-color: #f4f1eb;
     border-color: rgba(195, 0, 0, 0.8);
-    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, border-color 0.25s ease;
 }
 
 body.light-theme .floating-mute svg {
     color: #C30000;
     filter: drop-shadow(0 0 7px rgba(195, 0, 0, 0.6));
-    transition: transform 900ms cubic-bezier(.2,.8,.2,1), filter 900ms ease, color 0.25s ease;
 }
 
 body.light-theme .floating-mute:hover {
@@ -2537,7 +2534,7 @@ body.home-page.light-theme::before { background: #000; }
 body.light-theme .hero-video-dark { visibility: hidden; }
 body.light-theme .hero-video-light { visibility: visible; }
 
-/* An eclipse hides the surface change while the planet stays fixed in place. */
+/* Blend aligned textures using compositor opacity, without repainting a video mask. */
 .hero.is-morphing .hero-video,
 .hero.is-morph-complete .hero-video { transition: none !important; }
 .hero.is-morphing .hero-video.is-outgoing {
@@ -2549,18 +2546,17 @@ body.light-theme .hero-video-light { visibility: visible; }
     z-index: 2;
     opacity: 0;
     visibility: hidden;
-}
-.hero.is-morphing.is-surface-ready .hero-video.is-incoming {
-    visibility: visible;
+    will-change: opacity;
 }
 .hero.is-revealing .hero-video.is-incoming {
-    animation: heroEclipseSwap var(--hero-morph-duration, 1400ms) linear both;
+    visibility: visible;
+    animation: heroSurfaceBlend var(--hero-morph-duration, 2200ms) cubic-bezier(.4, 0, .25, 1) both;
 }
-@keyframes heroEclipseSwap {
-    0%, 42% { opacity: 0; }
-    58%, 100% { opacity: 1; }
+@keyframes heroSurfaceBlend {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
-.hero-eclipse {
+.hero-transformation {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -2568,33 +2564,32 @@ body.light-theme .hero-video-light { visibility: visible; }
     width: var(--hero-planet-diameter, min(84vw, 90vh));
     aspect-ratio: 1;
     border-radius: 50%;
-    overflow: hidden;
     visibility: hidden;
     transform: translate(-50%, -50%);
     pointer-events: none;
+    --hero-glow-color: 170, 192, 230;
 }
-.hero-eclipse-shadow {
+.hero[data-morph-to="sun"] .hero-transformation { --hero-glow-color: 255, 166, 72; }
+.hero.is-revealing .hero-transformation { visibility: visible; }
+.hero-transformation::before {
+    content: "";
     position: absolute;
-    inset: -8%;
+    inset: -4%;
     border-radius: 50%;
-    background: radial-gradient(closest-side, #020205 0 95%, rgba(2, 2, 5, .88) 98%, transparent 100%);
-    transform: translateX(-115%);
+    opacity: 0;
+    background: radial-gradient(closest-side,
+        rgba(var(--hero-glow-color), .12) 0%,
+        rgba(var(--hero-glow-color), .2) 65%,
+        rgba(var(--hero-glow-color), .34) 89%,
+        transparent 100%);
 }
-.hero[data-morph-to="sun"] .hero-eclipse-shadow { transform: translateX(115%); }
-.hero.is-revealing .hero-eclipse { visibility: visible; }
-.hero.is-revealing .hero-eclipse-shadow {
-    animation: heroEclipsePass var(--hero-morph-duration, 1400ms) cubic-bezier(.4, 0, .2, 1) both;
+.hero.is-revealing .hero-transformation::before {
+    will-change: opacity;
+    animation: heroSurfaceLight var(--hero-morph-duration, 2200ms) ease-in-out both;
 }
-.hero.is-revealing[data-morph-to="sun"] .hero-eclipse-shadow { animation-name: heroEclipseReturn; }
-@keyframes heroEclipsePass {
-    0% { transform: translateX(-115%); }
-    42%, 58% { transform: translateX(0); }
-    100% { transform: translateX(115%); }
-}
-@keyframes heroEclipseReturn {
-    0% { transform: translateX(115%); }
-    42%, 58% { transform: translateX(0); }
-    100% { transform: translateX(-115%); }
+@keyframes heroSurfaceLight {
+    0%, 100% { opacity: 0; }
+    50% { opacity: .24; }
 }
 @media (hover: hover) and (pointer: fine) {
     .project-card:hover, .latest-card.animate:hover,
@@ -2604,7 +2599,7 @@ body.light-theme .hero-video-light { visibility: visible; }
     }
 }
 @media (prefers-reduced-motion: reduce) {
-    .hero-eclipse { display: none; }
+    .hero-transformation { display: none; }
     *, *::before, *::after {
         animation-duration: .01ms !important;
         animation-iteration-count: 1 !important;
