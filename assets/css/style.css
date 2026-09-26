@@ -2532,7 +2532,7 @@ body.home-page.light-theme::before { background: #000; }
 /* Crisp original video, without scaling or softening effects. */
 .hero-video { filter: none; transform: none; }
 
-/* Reveal the new planet first, then let its night sky replace the old scene. */
+/* The aligned planet surfaces blend in place; a brief glow marks the change. */
 .hero.is-morphing .hero-video,
 .hero.is-morph-complete .hero-video { transition: none !important; }
 .hero.is-morphing .hero-video.is-outgoing {
@@ -2541,17 +2541,16 @@ body.home-page.light-theme::before { background: #000; }
 }
 .hero.is-morphing .hero-video.is-incoming {
     z-index: 2;
-    opacity: 1;
-    clip-path: circle(0px at 50% 50%);
+    opacity: 0;
 }
 .hero.is-revealing .hero-video.is-incoming {
-    animation: heroPlanetReveal 1450ms cubic-bezier(.18,.72,.17,1) both;
+    animation: heroPlanetTransform 1000ms ease-in-out both;
 }
-@keyframes heroPlanetReveal {
-    0% { clip-path: circle(0px at 50% 50%); opacity: .5; }
-    24% { opacity: .82; }
-    58% { clip-path: circle(var(--hero-corona-radius) at 50% 50%); opacity: 1; }
-    100% { clip-path: circle(var(--hero-full-radius) at 50% 50%); opacity: 1; }
+@keyframes heroPlanetTransform {
+    0% { opacity: 0; }
+    20% { opacity: .12; }
+    55% { opacity: .62; }
+    100% { opacity: 1; }
 }
 .hero-transform-ring {
     position: absolute;
@@ -2560,38 +2559,23 @@ body.home-page.light-theme::before { background: #000; }
     z-index: 3;
     width: var(--hero-ring-diameter, min(72vw, 85vh));
     aspect-ratio: 1;
-    border: 2px solid rgba(255, 132, 45, .8);
     border-radius: 50%;
-    box-shadow: 0 0 32px 10px rgba(255, 96, 15, .48),
-                inset 0 0 26px 7px rgba(255, 96, 15, .22);
+    background: radial-gradient(circle, rgba(255, 170, 85, .04) 40%, rgba(255, 115, 35, .19) 64%, transparent 78%);
+    mix-blend-mode: screen;
     opacity: 0;
-    transform: translate(-50%, -50%) scale(.04);
+    transform: translate(-50%, -50%) scale(.99);
     pointer-events: none;
 }
-.hero-transform-ring::before {
-    content: "";
-    position: absolute;
-    inset: -11%;
-    border-radius: 50%;
-    background: radial-gradient(circle, transparent 48%, rgba(255, 130, 45, .18) 65%, transparent 78%);
-}
 body.light-theme .hero-transform-ring {
-    border-color: rgba(224, 233, 255, .88);
-    box-shadow: 0 0 32px 10px rgba(188, 211, 255, .48),
-                inset 0 0 26px 7px rgba(188, 211, 255, .25);
-}
-body.light-theme .hero-transform-ring::before {
-    background: radial-gradient(circle, transparent 48%, rgba(188, 211, 255, .17) 65%, transparent 78%);
+    background: radial-gradient(circle, rgba(215, 228, 255, .04) 40%, rgba(188, 211, 255, .2) 64%, transparent 78%);
 }
 .hero.is-revealing .hero-transform-ring {
-    animation: heroTransformRing 1450ms cubic-bezier(.18,.72,.17,1) both;
+    animation: heroSurfaceGlow 1000ms ease-in-out both;
 }
-@keyframes heroTransformRing {
-    0% { opacity: 0; transform: translate(-50%, -50%) scale(.04); }
-    18% { opacity: .75; }
-    58% { opacity: .9; transform: translate(-50%, -50%) scale(1.16); }
-    78% { opacity: .2; }
-    100% { opacity: 0; transform: translate(-50%, -50%) scale(var(--hero-ring-end-scale, 3)); }
+@keyframes heroSurfaceGlow {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(.99); }
+    50% { opacity: .5; transform: translate(-50%, -50%) scale(1.02); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(1.04); }
 }
 @media (hover: hover) and (pointer: fine) {
     .project-card:hover, .latest-card.animate:hover,

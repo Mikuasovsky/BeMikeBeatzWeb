@@ -26,21 +26,16 @@
 
     const heroVideos = [...document.querySelectorAll('.hero-video')];
     const hero = document.querySelector('.hero');
-    const heroMorphDuration = 1450;
+    const heroMorphDuration = 1000;
     const canPlayHeroVideo = () => !reduceMotion &&
         !window.matchMedia('(max-width: 900px)').matches && !navigator.connection?.saveData;
-    const canAnimateHero = () => hero && heroVideos.length === 2 && !reduceMotion &&
-        window.CSS?.supports('clip-path', 'circle(0% at 50% 50%)');
+    const canAnimateHero = () => hero && heroVideos.length === 2 && !reduceMotion;
 
-    function setHeroMorphGeometry() {
+    function setHeroHaloSize() {
         const { width, height } = hero.getBoundingClientRect();
-        // Both 2560 × 1440 scenes place the planet at their centre, about 610 px in radius.
+        // Match the fixed glow to the planet in the two 2560 × 1440 scenes.
         const planetRadius = 610 * Math.max(width / 2560, height / 1440);
-        const fullRadius = Math.hypot(width / 2, height / 2) + 24;
-        hero.style.setProperty('--hero-corona-radius', `${planetRadius * 1.16}px`);
-        hero.style.setProperty('--hero-full-radius', `${fullRadius}px`);
         hero.style.setProperty('--hero-ring-diameter', `${planetRadius * 2}px`);
-        hero.style.setProperty('--hero-ring-end-scale', String(fullRadius / planetRadius));
     }
 
     function primeHeroVideo(video) {
@@ -122,7 +117,7 @@
             const morph = canAnimateHero() && incoming && outgoing;
 
             if (morph) {
-                setHeroMorphGeometry();
+                setHeroHaloSize();
                 hero.classList.add('is-morphing');
                 incoming.classList.add('is-incoming');
                 outgoing.classList.add('is-outgoing');
