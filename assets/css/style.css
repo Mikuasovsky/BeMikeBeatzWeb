@@ -2531,6 +2531,11 @@ body.home-page.light-theme::before { background: #000; }
 
 /* Crisp original video, without scaling or softening effects. */
 .hero-video { filter: none; transform: none; }
+/* Hide the inactive video from painting, including its poster and first frame. */
+.hero-video-dark { visibility: visible; }
+.hero-video-light { visibility: hidden; }
+body.light-theme .hero-video-dark { visibility: hidden; }
+body.light-theme .hero-video-light { visibility: visible; }
 
 /* An eclipse hides the surface change while the planet stays fixed in place. */
 .hero.is-morphing .hero-video,
@@ -2538,10 +2543,15 @@ body.home-page.light-theme::before { background: #000; }
 .hero.is-morphing .hero-video.is-outgoing {
     z-index: 1;
     opacity: 1;
+    visibility: visible;
 }
 .hero.is-morphing .hero-video.is-incoming {
     z-index: 2;
     opacity: 0;
+    visibility: hidden;
+}
+.hero.is-morphing.is-surface-ready .hero-video.is-incoming {
+    visibility: visible;
 }
 .hero.is-revealing .hero-video.is-incoming {
     animation: heroEclipseSwap var(--hero-morph-duration, 1400ms) linear both;

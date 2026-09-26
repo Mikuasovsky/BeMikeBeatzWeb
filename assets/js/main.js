@@ -126,7 +126,9 @@
                 hero.classList.add('is-morphing');
                 incoming.classList.add('is-incoming');
                 outgoing.classList.add('is-outgoing');
-                // Keep the old scene on screen until the new video has a frame to reveal.
+                // Commit the hidden layer before loading/playing it: video posters and
+                // decoded frames can otherwise reach the compositor before the eclipse.
+                void incoming.offsetWidth;
                 await primeHeroVideo(incoming);
             }
 
@@ -137,6 +139,8 @@
                 const applyTheme = () => {
                     if (appliedTheme) return;
                     appliedTheme = true;
+                    // Reveal only while the eclipse fully covers the planet.
+                    if (morph) hero.classList.add('is-surface-ready');
                     document.body.classList.toggle('light-theme', isLightTheme);
                     storage.setItem('bemike-theme', isLightTheme ? 'light' : 'dark');
                     updateThemeToggle();
@@ -155,7 +159,7 @@
                         incoming.removeEventListener('animationend', onAnimationEnd);
                         applyTheme();
                         hero.classList.add('is-morph-complete');
-                        hero.classList.remove('is-morphing', 'is-revealing');
+                        hero.classList.remove('is-morphing', 'is-revealing', 'is-surface-ready');
                         incoming.classList.remove('is-incoming');
                         outgoing.classList.remove('is-outgoing');
                         delete hero.dataset.morphTo;
