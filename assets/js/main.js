@@ -26,10 +26,50 @@
 
     const heroVideos = [...document.querySelectorAll('.hero-video')];
     const hero = document.querySelector('.hero');
-    const canAnimateHero = () => heroVideos.length === 2 && !reduceMotion &&
-        !window.matchMedia('(max-width: 900px)').matches &&
-        !navigator.connection?.saveData &&
+    const heroMorphDuration = 1450;
+    const canPlayHeroVideo = () => !reduceMotion &&
+        !window.matchMedia('(max-width: 900px)').matches && !navigator.connection?.saveData;
+    const canAnimateHero = () => hero && heroVideos.length === 2 && !reduceMotion &&
         window.CSS?.supports('clip-path', 'circle(0% at 50% 50%)');
+
+    function setHeroMorphGeometry() {
+        const { width, height } = hero.getBoundingClientRect();
+        // Both 2560 × 1440 scenes place the planet at their centre, about 610 px in radius.
+        const planetRadius = 610 * Math.max(width / 2560, height / 1440);
+        const fullRadius = Math.hypot(width / 2, height / 2) + 24;
+        hero.style.setProperty('--hero-corona-radius', `${planetRadius * 1.16}px`);
+        hero.style.setProperty('--hero-full-radius', `${fullRadius}px`);
+        hero.style.setProperty('--hero-ring-diameter', `${planetRadius * 2}px`);
+        hero.style.setProperty('--hero-ring-end-scale', String(fullRadius / planetRadius));
+    }
+
+    function primeHeroVideo(video) {
+        if (!canPlayHeroVideo()) return Promise.resolve();
+        const source = video.querySelector('source[data-src]');
+        if (!source) return Promise.resolve();
+
+        const firstFrame = video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA
+            ? Promise.resolve()
+            : new Promise(resolve => {
+                let timeout;
+                const done = () => {
+                    window.clearTimeout(timeout);
+                    video.removeEventListener('loadeddata', done);
+                    video.removeEventListener('error', done);
+                    resolve();
+                };
+                video.addEventListener('loadeddata', done);
+                video.addEventListener('error', done);
+                timeout = window.setTimeout(done, 900);
+            });
+
+        if (!source.getAttribute('src')) {
+            source.src = source.dataset.src;
+            video.load();
+        }
+        video.play().catch(() => {});
+        return firstFrame;
+    }
 
     function updateHeroVideo(keepPlaying) {
         if (!heroVideos.length) return;
@@ -39,9 +79,7 @@
 
         heroVideos.forEach(video => {
             const source = video.querySelector('source[data-src]');
-            const shouldPlay = (video.classList.contains(activeClass) || video === keepPlaying) && !reduceMotion &&
-                !window.matchMedia('(max-width: 900px)').matches &&
-                !navigator.connection?.saveData;
+            const shouldPlay = (video.classList.contains(activeClass) || video === keepPlaying) && canPlayHeroVideo();
 
             if (shouldPlay && source && !source.getAttribute('src')) {
                 source.src = source.dataset.src;
@@ -70,47 +108,54 @@
     updateHeroVideo();
 
     let themeTransitionTimer;
+    let switchingTheme = false;
     if (themeToggle) {
-        themeToggle.addEventListener('click', () => {
-            if (hero?.classList.contains('is-morphing')) return;
+        themeToggle.addEventListener('click', async () => {
+            if (switchingTheme) return;
+            switchingTheme = true;
             window.clearTimeout(themeTransitionTimer);
+            const isLightTheme = !document.body.classList.contains('light-theme');
+            const incoming = heroVideos.find(video => video.classList.contains(
+                isLightTheme ? 'hero-video-light' : 'hero-video-dark'
+            ));
+            const outgoing = heroVideos.find(video => video !== incoming);
+            const morph = canAnimateHero() && incoming && outgoing;
+
+            if (morph) {
+                setHeroMorphGeometry();
+                hero.classList.add('is-morphing');
+                incoming.classList.add('is-incoming');
+                outgoing.classList.add('is-outgoing');
+                // Keep the old scene on screen until the new video has a frame to reveal.
+                await primeHeroVideo(incoming);
+            }
+
             document.body.classList.add('theme-transition');
             void document.body.offsetWidth;
-
             window.requestAnimationFrame(() => {
-                const isLightTheme = document.body.classList.toggle('light-theme');
-                const incoming = heroVideos.find(video => video.classList.contains(
-                    isLightTheme ? 'hero-video-light' : 'hero-video-dark'
-                ));
-                const outgoing = heroVideos.find(video => video !== incoming);
-
-                if (canAnimateHero() && incoming && outgoing) {
-                    // Keep the old scene moving while the new scene grows from its centre.
-                    hero.classList.add('is-morphing');
-                    incoming.classList.add('is-incoming');
-                    outgoing.classList.add('is-outgoing');
-                    updateHeroVideo(outgoing);
-                    void hero.offsetWidth;
-                    window.requestAnimationFrame(() => incoming.classList.add('is-revealing'));
-
-                    window.setTimeout(() => {
-                        hero.classList.add('is-morph-complete');
-                        incoming.classList.remove('is-incoming', 'is-revealing');
-                        outgoing.classList.remove('is-outgoing');
-                        hero.classList.remove('is-morphing');
-                        updateHeroVideo();
-                        window.requestAnimationFrame(() => hero.classList.remove('is-morph-complete'));
-                    }, 1450);
-                } else {
-                    updateHeroVideo();
-                }
-
+                document.body.classList.toggle('light-theme', isLightTheme);
                 storage.setItem('bemike-theme', isLightTheme ? 'light' : 'dark');
                 updateThemeToggle();
+                updateHeroVideo(morph ? outgoing : undefined);
+
+                if (morph) {
+                    hero.classList.add('is-revealing');
+                    window.setTimeout(() => {
+                        hero.classList.add('is-morph-complete');
+                        hero.classList.remove('is-morphing', 'is-revealing');
+                        incoming.classList.remove('is-incoming');
+                        outgoing.classList.remove('is-outgoing');
+                        updateHeroVideo();
+                        window.requestAnimationFrame(() => hero.classList.remove('is-morph-complete'));
+                        switchingTheme = false;
+                    }, heroMorphDuration);
+                } else {
+                    switchingTheme = false;
+                }
 
                 themeTransitionTimer = window.setTimeout(() => {
                     document.body.classList.remove('theme-transition');
-                }, reduceMotion ? 0 : 650);
+                }, reduceMotion ? 0 : morph ? heroMorphDuration + 50 : 650);
             });
         });
     }

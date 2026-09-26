@@ -238,7 +238,7 @@ body.light-theme .hero-video-light {
         radial-gradient(ellipse at 50% 62%, rgba(0,0,0,0.28), transparent 46%),
         linear-gradient(90deg, rgba(0,0,0,0.28), rgba(0,0,0,0.04) 48%, rgba(0,0,0,0.22));
     z-index: 2;
-    transition: background 1400ms ease;
+    transition: opacity 550ms ease;
 }
 
 .hero::after {
@@ -254,6 +254,8 @@ body.light-theme .hero-video-light {
     mix-blend-mode: screen;
     pointer-events: none;
     z-index: 2;
+    opacity: 1;
+    transition: opacity 550ms ease;
 }
 
 .hero-content {
@@ -1057,7 +1059,7 @@ body.light-theme .header-center a {
 }
 
 body.light-theme .hero-overlay {
-    background: transparent;
+    opacity: 0;
 }
 
 body.light-theme .hero-content {
@@ -1089,14 +1091,15 @@ body.theme-transition > main {
     transition: background-color 420ms ease;
 }
 body.theme-transition .hero-video { transition: opacity 600ms ease; }
-body.theme-transition .hero-overlay { transition: background 420ms ease; }
+body.theme-transition .hero-overlay,
+body.theme-transition .hero::after { transition: opacity 550ms ease; }
 body.theme-transition .floating-brand img {
     transform: rotate(12deg) scale(1.04);
     transition: transform 300ms ease;
 }
 
 body.light-theme .hero::after {
-    display: none;
+    opacity: 0;
 }
 
 body.light-theme .about-preview,
@@ -2529,7 +2532,7 @@ body.home-page.light-theme::before { background: #000; }
 /* Crisp original video, without scaling or softening effects. */
 .hero-video { filter: none; transform: none; }
 
-/* The next scene opens over the current one, following the planet's outline. */
+/* Reveal the new planet first, then let its night sky replace the old scene. */
 .hero.is-morphing .hero-video,
 .hero.is-morph-complete .hero-video { transition: none !important; }
 .hero.is-morphing .hero-video.is-outgoing {
@@ -2539,40 +2542,56 @@ body.home-page.light-theme::before { background: #000; }
 .hero.is-morphing .hero-video.is-incoming {
     z-index: 2;
     opacity: 1;
-    clip-path: circle(0% at 50% 50%);
-    transition: clip-path 1250ms cubic-bezier(.22,.7,.2,1) !important;
+    clip-path: circle(0px at 50% 50%);
 }
-.hero.is-morphing .hero-video.is-incoming.is-revealing {
-    clip-path: circle(150% at 50% 50%);
+.hero.is-revealing .hero-video.is-incoming {
+    animation: heroPlanetReveal 1450ms cubic-bezier(.18,.72,.17,1) both;
+}
+@keyframes heroPlanetReveal {
+    0% { clip-path: circle(0px at 50% 50%); opacity: .5; }
+    24% { opacity: .82; }
+    58% { clip-path: circle(var(--hero-corona-radius) at 50% 50%); opacity: 1; }
+    100% { clip-path: circle(var(--hero-full-radius) at 50% 50%); opacity: 1; }
 }
 .hero-transform-ring {
     position: absolute;
     top: 50%;
     left: 50%;
     z-index: 3;
-    width: min(72vw, 85vh);
+    width: var(--hero-ring-diameter, min(72vw, 85vh));
     aspect-ratio: 1;
     border: 2px solid rgba(255, 132, 45, .8);
     border-radius: 50%;
-    box-shadow: 0 0 32px 12px rgba(255, 96, 15, .5),
-                inset 0 0 32px 12px rgba(255, 96, 15, .25);
+    box-shadow: 0 0 32px 10px rgba(255, 96, 15, .48),
+                inset 0 0 26px 7px rgba(255, 96, 15, .22);
     opacity: 0;
-    transform: translate(-50%, -50%) scale(.05);
+    transform: translate(-50%, -50%) scale(.04);
     pointer-events: none;
+}
+.hero-transform-ring::before {
+    content: "";
+    position: absolute;
+    inset: -11%;
+    border-radius: 50%;
+    background: radial-gradient(circle, transparent 48%, rgba(255, 130, 45, .18) 65%, transparent 78%);
 }
 body.light-theme .hero-transform-ring {
     border-color: rgba(224, 233, 255, .88);
-    box-shadow: 0 0 36px 14px rgba(188, 211, 255, .5),
-                inset 0 0 36px 14px rgba(188, 211, 255, .3);
+    box-shadow: 0 0 32px 10px rgba(188, 211, 255, .48),
+                inset 0 0 26px 7px rgba(188, 211, 255, .25);
 }
-.hero.is-morphing .hero-transform-ring {
-    animation: heroTransformRing 1250ms cubic-bezier(.22,.7,.2,1) both;
+body.light-theme .hero-transform-ring::before {
+    background: radial-gradient(circle, transparent 48%, rgba(188, 211, 255, .17) 65%, transparent 78%);
+}
+.hero.is-revealing .hero-transform-ring {
+    animation: heroTransformRing 1450ms cubic-bezier(.18,.72,.17,1) both;
 }
 @keyframes heroTransformRing {
-    0% { opacity: 0; transform: translate(-50%, -50%) scale(.05); }
-    18% { opacity: .8; }
-    65% { opacity: .5; }
-    100% { opacity: 0; transform: translate(-50%, -50%) scale(3); }
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(.04); }
+    18% { opacity: .75; }
+    58% { opacity: .9; transform: translate(-50%, -50%) scale(1.16); }
+    78% { opacity: .2; }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(var(--hero-ring-end-scale, 3)); }
 }
 @media (hover: hover) and (pointer: fine) {
     .project-card:hover, .latest-card.animate:hover,
